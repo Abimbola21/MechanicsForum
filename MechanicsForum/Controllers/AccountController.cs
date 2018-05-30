@@ -83,18 +83,18 @@ namespace MechanicsForum.Controllers
                 case SignInStatus.Success:
                     ApplicationUser user = await UserManager.FindAsync(model.UserName, model.Password);
                     // Redirect to User landing page on SignIn, according to Role
-                    if ((UserManager.IsInRole(user.Id, "User")))
-                    {
-                        return RedirectToAction("Index", "Problem");
-                    }
-                    if ((UserManager.IsInRole(user.Id, "Mechanic")))
-                    {
-                        return RedirectToAction("Index", "Mechanic");
-                    }
-                    if ((UserManager.IsInRole(user.Id, "Admin")))
-                    {
-                        return RedirectToAction("Index", "Admin");
-                    }
+                    //if ((UserManager.IsInRole(user.Id, "User")))
+                    //{
+                    //    return RedirectToAction("Index", "Problem");
+                    //}
+                    //if ((UserManager.IsInRole(user.Id, "Mechanic")))
+                    //{
+                    //    return RedirectToAction("Index", "Mechanic");
+                    //}
+                    //if ((UserManager.IsInRole(user.Id, "Admin")))
+                    //{
+                    //    return RedirectToAction("Index", "Admin");
+                    //}
                     return View(model);
                 // return RedirectToLocal(returnUrl);
                 case SignInStatus.LockedOut:
@@ -391,7 +391,7 @@ namespace MechanicsForum.Controllers
                 {
                     return View("ExternalLoginFailure");
                 }
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.UserName, Email = model.Email };
                 var result = await UserManager.CreateAsync(user);
                 if (result.Succeeded)
                 {

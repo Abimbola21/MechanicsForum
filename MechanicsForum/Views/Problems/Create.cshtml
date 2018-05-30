@@ -4,38 +4,87 @@
     ViewBag.Title = "Create";
 }
 
-<h2>Create</h2>
+<h2>Post a Problem</h2>
 
+<div class="form-horizontal">
+    <h4>Problem</h4>
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    <form id="fileSelectForm" action="\Problems\Create" method="post" enctype="multipart/form-data">
+        <label for="desc">Description: </label>
+        <textarea name="Description" placeholder="Problem Description" id="Description" rows="10" cols="30"></textarea>
+        <input type="file" name="file1" id="file1" onchange="addFileSelection(this.name);" />
+        <span id="x1" style="color:red" onclick="removeFileSelection(this);">X</span>
+        <br id="br1" />
+        <input type="submit" value="Submit" />
+    </form>
+
+</div>
+
+<script>
+        /* This function recieves a name (string) and finds that element in the document, then removes it from it's parent node.
+         * You have to use the removeChild method on the parent node of the object.
+         */
+        function removeElement(name) {
+            var elementToRemove = document.getElementById(name);
+            elementToRemove.parentNode.removeChild(elementToRemove);
+        }
+        /* This function recieves a name (string) and attempts to find it in the document object.  it's going to increment the number at the end
+         * of the name and create a new object, but only if that object doesn't already exist.
+         * It adds three elements, a file input, a red X inside a span tag, and a break tag
+         */
+        function addFileSelection(name) {
+            // skip the "file" part of the name and grab the number that is the rest
+            newID = (parseInt(name.substring(5, name.length - 1)) + 1);
+            //check to see if the next increment of that object already exists
+            if (document.getElementById("file" + newID) == null) {
+                //get the form object so you have a reference to add child to for the three object to create
+                var formObj = document.getElementById("fileSelectForm");
+                // create the new input file object
+                var input = document.createElement("input");
+                input.type = "file";
+                var newName = "file" + newID;
+                input.name = newName;
+                input.id = newName;
+                // this is the hard part.  anonymous function that calls the addFileSelection function and passes it the name
+                input.addEventListener("change", function () {
+                    addFileSelection(this.name);
+                });
+                formObj.appendChild(input);
+                //create the new span tag with the red X in it
+                var spanObj = document.createElement("span");
+                spanObj.id = "x" + newID;
+                spanObj.style = "color:red";
+                spanObj.addEventListener("click", function () {
+                    removeFileSelection(this);
+                })
+                spanObj.innerHTML = "X";
+                formObj.appendChild(spanObj);
+                //create the break tag to make a new line.  have to add an id so we know which one to remove when they click the X
+                var newBR = document.createElement("br");
+                newBR.id = "br" + newID;
+                formObj.appendChild(newBR);
+            }
+        }
+        /* This function removes the file, span, and br tags with the same number at the end
+         */
+        function removeFileSelection(o) {
+            var elementIdNumber = parseInt(o.id.substring(2, o.id.length - 1));
+            var elementToDelete = document.getElementById("file" + elementIdNumber);
+            if (elementToDelete.files.length > 0) {
+                removeElement("file" + elementIdNumber);
+                removeElement("x" + elementIdNumber);
+                removeElement("br" + elementIdNumber);
+            }
+
+        }
+</script>
 @using (Html.BeginForm()) 
 {
     @Html.AntiForgeryToken()
     
-    <div class="form-horizontal">
-        <h4>Problem</h4>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div class="form-group">
-            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
-            </div>
-        </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.MediaPath, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.MediaPath, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.MediaPath, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
-            </div>
-        </div>
-    </div>
 }
 
 <div>
