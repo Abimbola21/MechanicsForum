@@ -35,7 +35,7 @@ namespace MechanicsForum
                 //Here we create a Admin super user who will maintain the website                  
 
                 var user = new ApplicationUser();
-                user.UserName = "Abim";
+                user.UserName = "Administrator";
                 user.Email = "bimzy4me@hotmail.com";
                 string userPWD = "Admin@01";
 

@@ -9,6 +9,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using MechanicsForum.Models;
+using System.Net.Mail;
 
 namespace MechanicsForum.Controllers
 {
@@ -83,18 +84,18 @@ namespace MechanicsForum.Controllers
                 case SignInStatus.Success:
                     ApplicationUser user = await UserManager.FindAsync(model.UserName, model.Password);
                     // Redirect to User landing page on SignIn, according to Role
-                    //if ((UserManager.IsInRole(user.Id, "User")))
-                    //{
-                    //    return RedirectToAction("Index", "Problem");
-                    //}
-                    //if ((UserManager.IsInRole(user.Id, "Mechanic")))
-                    //{
-                    //    return RedirectToAction("Index", "Mechanic");
-                    //}
-                    //if ((UserManager.IsInRole(user.Id, "Admin")))
-                    //{
-                    //    return RedirectToAction("Index", "Admin");
-                    //}
+                    if ((UserManager.IsInRole(user.Id, "User")))
+                    {
+                        return RedirectToAction("Index", "Problems");
+                    }
+                    if ((UserManager.IsInRole(user.Id, "Mechanic")))
+                    {
+                        return RedirectToAction("Index", "Problems");
+                    }
+                    if ((UserManager.IsInRole(user.Id, "Admin")))
+                    {
+                      return RedirectToAction("Index", "AspNetUsers");
+                    }
                     return View(model);
                 // return RedirectToLocal(returnUrl);
                 case SignInStatus.LockedOut:
@@ -177,10 +178,20 @@ namespace MechanicsForum.Controllers
 
                     // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
                     // Send an email with this link
-                    // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                    // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                    // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+                    string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                    var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code }, protocol: Request.Url.Scheme);
+                    //await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
 
+                    var body = "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>";
+                    var message = new MailMessage();
+                    message.To.Add(model.Email);
+                    message.Subject = "Confirm Account";
+                    message.Body = string.Format(body, "Mechanics Forum", "mechanicsautomation@gmail.com");
+                    message.IsBodyHtml = true;
+                    using (var smtp = new SmtpClient())
+                    {
+                        await smtp.SendMailAsync(message);
+                    }
                     //Assign Role to user Here
                     await this.UserManager.AddToRoleAsync(user.Id, model.UserRoles);
                     //Ends here
@@ -224,7 +235,7 @@ namespace MechanicsForum.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await UserManager.FindByNameAsync(model.Email);
+                var user = await UserManager.FindByEmailAsync(model.Email);
                 if (user == null || !(await UserManager.IsEmailConfirmedAsync(user.Id)))
                 {
                     // Don't reveal that the user does not exist or is not confirmed
@@ -233,10 +244,23 @@ namespace MechanicsForum.Controllers
 
                 // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
                 // Send an email with this link
-                // string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
-                // var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);		
-                // await UserManager.SendEmailAsync(user.Id, "Reset Password", "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>");
-                // return RedirectToAction("ForgotPasswordConfirmation", "Account");
+                string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
+                //var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, HttpUtility.UrlEncode(code) }, protocol: Request.Url.Scheme);
+                //await UserManager.SendEmailAsync(user.Id, "Reset Password", "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>");
+                string callbackUrl = "<a href=' http://localhost:50058/Account/ResetPassword?userId=" + user.Id + "&code="
+                    + HttpUtility.UrlEncode(code) + "'>Click this link to reset your password.</a>";             
+               //var body = "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>";
+                var message = new MailMessage();
+                message.To.Add(model.Email);
+                message.Subject = "Reset Password";
+                message.Body = string.Format(callbackUrl, "Mechanics Forum", "mechanicsautomation@gmail.com");
+                message.IsBodyHtml = true;
+                using (var smtp = new SmtpClient())
+                {
+                    await smtp.SendMailAsync(message);
+                    return RedirectToAction("ForgotPasswordConfirmation", "Account");
+                 }
+                
             }
 
             // If we got this far, something failed, redisplay form
@@ -270,12 +294,13 @@ namespace MechanicsForum.Controllers
             {
                 return View(model);
             }
-            var user = await UserManager.FindByNameAsync(model.Email);
+            var user = await UserManager.FindByEmailAsync(model.Email);
             if (user == null)
             {
                 // Don't reveal that the user does not exist
                 return RedirectToAction("ResetPasswordConfirmation", "Account");
             }
+            //var code = model.Code.Replace(' ', '+');
             var result = await UserManager.ResetPasswordAsync(user.Id, model.Code, model.Password);
             if (result.Succeeded)
             {

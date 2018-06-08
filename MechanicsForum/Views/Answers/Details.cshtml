@@ -1,0 +1,66 @@
+﻿@model MechanicsForum.Models.Answers
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Answers</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ProblemId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ProblemId)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AnsweredBy)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AnsweredBy)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Answer)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Answer)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.MediaPath)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MediaPath)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AnswerDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AnswerDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ModifiedDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ModifiedDate)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

@@ -12,6 +12,8 @@
     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
     <form id="fileSelectForm" action="\Problems\Create" method="post" enctype="multipart/form-data">
+        <label for="summary">Summary: </label>
+        <textarea  name="Summary" id="Summary" placeholder="Summary" rows="2" cols="30"></textarea>
         <label for="desc">Description: </label>
         <textarea name="Description" placeholder="Problem Description" id="Description" rows="10" cols="30"></textarea>
         <input type="file" name="file1" id="file1" onchange="addFileSelection(this.name);" />

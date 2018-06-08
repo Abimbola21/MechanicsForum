@@ -222,6 +222,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AnswersController.cs" />
     <Compile Include="Controllers\AspNetUsersController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
@@ -246,8 +247,21 @@
     <Compile Include="Migrations\201805251536338_status.Designer.cs">
       <DependentUpon>201805251536338_status.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201806081517042_ProblemsUpdate.cs" />
+    <Compile Include="Migrations\201806081517042_ProblemsUpdate.Designer.cs">
+      <DependentUpon>201806081517042_ProblemsUpdate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201806081530486_ProblemsUpdate2.cs" />
+    <Compile Include="Migrations\201806081530486_ProblemsUpdate2.Designer.cs">
+      <DependentUpon>201806081530486_ProblemsUpdate2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201806081606089_AnswerTable.cs" />
+    <Compile Include="Migrations\201806081606089_AnswerTable.Designer.cs">
+      <DependentUpon>201806081606089_AnswerTable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\Answers.cs" />
     <Compile Include="Models\AspNetRole.cs">
       <DependentUpon>UserAdmin.tt</DependentUpon>
     </Compile>
@@ -372,6 +386,11 @@
     <Content Include="Views\AspNetUsers\Details.cshtml" />
     <Content Include="Views\AspNetUsers\Edit.cshtml" />
     <Content Include="Views\AspNetUsers\Index.cshtml" />
+    <Content Include="Views\Answers\Create.cshtml" />
+    <Content Include="Views\Answers\Delete.cshtml" />
+    <Content Include="Views\Answers\Details.cshtml" />
+    <Content Include="Views\Answers\Edit.cshtml" />
+    <Content Include="Views\Answers\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -402,6 +421,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201805251536338_status.resx">
       <DependentUpon>201805251536338_status.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806081517042_ProblemsUpdate.resx">
+      <DependentUpon>201806081517042_ProblemsUpdate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806081530486_ProblemsUpdate2.resx">
+      <DependentUpon>201806081530486_ProblemsUpdate2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806081606089_AnswerTable.resx">
+      <DependentUpon>201806081606089_AnswerTable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

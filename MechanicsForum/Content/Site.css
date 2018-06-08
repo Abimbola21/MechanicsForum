@@ -22,3 +22,67 @@ select,
 textarea {
     max-width: 280px;
 }
+
+
+.rTable {
+    display: block;
+    width: 100%;
+    border: 1px solid black;
+}
+    /*.rTable div {
+        border: 0.5px dotted red;
+    }
+
+        .rTable div div  {
+            border: 1px solid #999999;
+            float: left;
+            height: 25px;
+            overflow: hidden;
+            padding: 3px 1.8%;
+            width: 20%;
+  
+        }*/
+ .rTableHeading, .rTableBody, .rTableFoot, .rTableRow {
+        clear: both;
+    }
+
+    .rTableHead, .rTableFoot {
+        background-color: #DDD;
+        font-weight: bold;
+    }
+
+    .rTableCell, .rTableHead {
+        border: 1px solid #999999;
+        float: left;
+        height: 25px;
+        overflow: hidden;
+        padding: 3px 1.8%;
+        width: 20%;
+    }
+
+.rCellOther {
+    float: left;
+    height: 25px;
+    overflow: hidden;
+    padding: 3px 1.8%;
+    width: 5%;
+}
+            .rTable:after {
+            visibility: hidden;
+            display: block;
+            font-size: 0;
+            content: " ";
+            clear: both;
+            height: 0;
+        }
+@media (min-width:979px) {
+    ul.nav li.dropdown:hover > div.dropdown-menu {
+        display: block;
+    }
+
+    ul.dropdown-item {
+        list-style-type: none;
+    }
+
+    
+}

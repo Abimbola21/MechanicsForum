@@ -7,45 +7,148 @@
 <h2>Index</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("Make new Post", "Create")
 </p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Description)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Status)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.UserId)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.MediaPath)
-        </th>
-        <th></th>
-    </tr>
+<div id="tbldiv">
+  
+</div>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Description)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Status)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.UserId)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.MediaPath)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.ProblemId }) |
-            @Html.ActionLink("Details", "Details", new { id=item.ProblemId }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.ProblemId })
-        </td>
-    </tr>
-}
 
-</table>
+<script>
+    window.addEventListener("load", function () {
+
+        postData('/Problems/GetAllProblems')
+            .then(function (response) {
+                console.table(response);
+
+                var tablediv = document.getElementById("tbldiv");
+                for (var i = 0; i < response.result.length; i++) {
+                    var innerdiv = document.createElement("div");
+                   // rowdiv.setAttribute("class", "rTableRow");
+                    tablediv.appendChild(innerdiv);
+
+                    //var lblBy = document.createElement("label");
+                    //lblBy.innerHTML = "Post By"
+                    //var lbldesc = document.createElement("label");
+                    //lbldesc.innerHTML = "Description"
+                    //var lblStatus = document.createElement("label");
+                    //lblStatus.innerHTML = "Status"                    
+                    //var lblMediaPath = document.createElement("label");
+                    //lblMediaPath.innerHTML = "Media Path"
+
+                    var statusby = document.createElement("div");
+                    var summarytxt = document.createElement("a");
+                    summarytxt.setAttribute("href", "/Problems/Details/" + response.result[i].Id);
+                    var status = document.createElement("div");
+                    var mediapath = document.createElement("div");
+
+
+                    //var cellEdit = document.createElement("a");
+                    //var cellDetails = document.createElement("a");
+                    //var cellDelete = document.createElement("a");
+
+                    //celldiv1.setAttribute("class", "rTableCell");
+                    //celldiv2.setAttribute("class", "rTableCell");
+                    //celldiv3.setAttribute("class", "rTableCell");
+                    //celldiv4.setAttribute("class", "rTableCell");
+                    //cellEdit.setAttribute("class", "rCellOther");
+                    //cellDetails.setAttribute("class", "rCellOther");
+                    //cellDelete.setAttribute("class", "rCellOther");
+
+                    if (response.result[i].Status == 'answered')
+                    postBy.innerHTML = response.result[i].UserId;
+                    desctxt.innerHTML = response.result[i].Description;
+                    status.innerHTML = response.result[i].Status;
+                    mediapath.innerHTML = response.result[i].MediaPath;
+
+                    //cellEdit.innerHTML = "Edit | ";
+                    //cellEdit.setAttribute("href", "/AspNetUsers/Edit/" + response.result[i].Id);
+                    //cellDetails.innerHTML = "Detail | ";
+                    //cellDetails.setAttribute("href", "/AspNetUsers/Details/" + response.result[i].Id);
+                    //cellDelete.innerHTML = "Delete";
+                    //cellDelete.setAttribute("href", "/AspNetUsers/Delete/" + response.result[i].Id);
+
+                  //  innerdiv.appendChild(lblBy);
+                    innerdiv.appendChild(postBy);
+                  //  innerdiv.appendChild(lbldesc);
+                    innerdiv.appendChild(desctxt);
+                  //  innerdiv.appendChild(lblStatus);
+                    innerdiv.appendChild(status);
+                  //  innerdiv.appendChild(lblMediaPath);
+                    innerdiv.appendChild(mediapath);
+
+
+                    //tablediv.appendChild(cellEdit);
+                    //tablediv.appendChild(cellDetails);
+                    //tablediv.appendChild(cellDelete);
+                }
+            })
+    });
+
+    function postData(url, data) {
+        // Default options are marked with *
+        return fetch(url, {
+            body: JSON.stringify(data), // must match 'Content-Type' header
+            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: 'same-origin', // include, same-origin, *omit
+            headers: {
+                'user-agent': 'Mozilla/4.0 MDN Example',
+                'content-type': 'application/json'
+            },
+            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            mode: 'cors', // no-cors, cors, *same-origin
+            redirect: 'follow', // manual, *follow, error
+            referrer: 'no-referrer', // *client, no-referrer
+        })
+            .then(response => response.json()) // parses response to JSON
+    }
+
+</script>
+
+
+
+
+@*<table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MediaPath)
+            </th>
+            <th></th>
+        </tr>
+
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MediaPath)
+            </td>
+            <td>
+                 @if (User.Identity.IsAuthenticated)
+                     {
+                         if (User.IsInRole("Mechanic"))
+                         {
+                @Html.ActionLink("Edit", "Edit", new { id = item.ProblemId }) |
+    @Html.ActionLink("Details", "Details", new { id = item.ProblemId }) |
+    @Html.ActionLink("Delete", "Delete", new { id = item.ProblemId })
+            </td>
+        </tr>
+    }
+
+    </table>*@

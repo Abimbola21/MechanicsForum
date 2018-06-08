@@ -17,11 +17,40 @@ namespace MechanicsForum.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
         enum MediaType { Image, Video, Document };
 
+        //GET: Logged in user
+        public string CurrentUser()
+        {
+           return User.Identity.GetUserName();
+        }
         // GET: Problems
         public ActionResult Index()
         {
-            return View(db.Problems.ToList());
+            // return View(db.Problems.ToList());
+            return View();
         }
+
+        //This returns a list of all problems
+        public JsonResult GetAllProblems()
+        {
+            var AllProblems = (from a in db.Problems
+                               select new
+                               {
+                                   a.Id,
+                                   a.UserId,
+                                   a.Description,
+                                   a.Status,
+                                   a.MediaPath
+                               });
+            if (AllProblems != null)
+            { 
+                    return Json(new { result = AllProblems }, JsonRequestBehavior.AllowGet);               
+            }
+            else
+            {
+                return Json(new { success = false }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        //end All Problem
 
         // GET: Problems/Details/5
         public ActionResult Details(int? id)
@@ -47,8 +76,7 @@ namespace MechanicsForum.Controllers
         // POST: Problems/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-         [HttpPost]
-         //[ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         // public ActionResult Create([Bind(Include = "ProblemId,Description,Status,UserId,MediaPath")] Problem problem, FileStream file)
         // {
         //
@@ -77,7 +105,7 @@ namespace MechanicsForum.Controllers
 
         //    return View(problem);                 
         //    }
-
+        [HttpPost]
         public ActionResult Create([Bind(Include = "Description,Media Path")] Problem problem)
         { 
             var result = new List<string>();
@@ -137,7 +165,7 @@ namespace MechanicsForum.Controllers
             }
             problem.MediaPath = path;
            // problem.Description = Description;
-            problem.Status = "Pending"; 
+            problem.Status = "posted"; 
             problem.UserId = User.Identity.GetUserName();
             if (ModelState.IsValid)
             {

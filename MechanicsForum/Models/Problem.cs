@@ -14,12 +14,18 @@ namespace MechanicsForum.Models
     
     public partial class Problem
     {
-        public int ProblemId { get; set; }
+        public int Id { get; set; }
         public string Description { get; set; }
         public string UserId { get; set; }
         public string MediaPath { get; set; }
         public string location { get; set; }
         public string Status { get; set; }
         public string Comment { get; set; }
+        public int Id1 { get; set; }
+        public System.DateTime PostDate { get; set; }
+        public System.DateTime ModifiedDate { get; set; }
+        public System.DateTime DateClosed { get; set; }
+        public string SolvedBy { get; set; }
+        public string ClosedBy { get; set; }
     }
 }

@@ -1,125 +1,142 @@
-﻿@model MechanicsForum.Models.AspNetUser
+﻿<body id="edit">
+    <h2>Edit</h2>
 
-@{
-    ViewBag.Title = "Edit";
-}
-
-<h2>Edit</h2>
-
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
-    
-    <div class="form-horizontal">
-        <h4>AspNetUser</h4>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @Html.HiddenFor(model => model.Id)
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.EmailConfirmed, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                <div class="checkbox">
-                    @Html.EditorFor(model => model.EmailConfirmed)
-                    @Html.ValidationMessageFor(model => model.EmailConfirmed, "", new { @class = "text-danger" })
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.PasswordHash, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.PasswordHash, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.PasswordHash, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.SecurityStamp, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.SecurityStamp, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.SecurityStamp, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.PhoneNumber, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.PhoneNumber, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.PhoneNumber, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.PhoneNumberConfirmed, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                <div class="checkbox">
-                    @Html.EditorFor(model => model.PhoneNumberConfirmed)
-                    @Html.ValidationMessageFor(model => model.PhoneNumberConfirmed, "", new { @class = "text-danger" })
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.TwoFactorEnabled, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                <div class="checkbox">
-                    @Html.EditorFor(model => model.TwoFactorEnabled)
-                    @Html.ValidationMessageFor(model => model.TwoFactorEnabled, "", new { @class = "text-danger" })
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.LockoutEndDateUtc, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.LockoutEndDateUtc, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.LockoutEndDateUtc, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.LockoutEnabled, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                <div class="checkbox">
-                    @Html.EditorFor(model => model.LockoutEnabled)
-                    @Html.ValidationMessageFor(model => model.LockoutEnabled, "", new { @class = "text-danger" })
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.AccessFailedCount, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.AccessFailedCount, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.AccessFailedCount, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.UserName, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
-            </div>
+    <input type="hidden" id="ID" />
+    <div class="form-group">
+        <label class="col-md-2 control-label" for="UserName">Username </label>
+        <div class="col-md-10">
+            <input type="text" name="UserName" id="UserName" required />
         </div>
     </div>
-}
+    <div class="form-group">
+        <label class="col-md-2 control-label" for="Email">Email </label>
+        <div class="col-md-10">
+            <input type="text" name="Email" id="Email" required />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-2 control-label" for="PhoneNumber">Phone Number </label>
+        <div class="col-md-10">
+            <input type="text" name="PhoneNumber" id="PhoneNumber" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-2 control-label" for="RoleSelected">Role</label>
+        <div class="col-md-10" id="AddRole">
+            @*<input type="text" name="UserRole" id="UserRole" required />*@
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-10">
+            @*<input type="text" name="AddToRole" id="AddToRole" required />*@
+        </div>
+    </div>
+    <br />  <br />
 
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Save" class="btn btn-default" id="save" />
+        </div>
+    </div>
+
+    <div>
+        @Html.ActionLink("Back to List", "Index")
+    </div>
+
+    <script>
+        //add event listener to body to populate my roles when it loads
+        var body = document.getElementById("edit");
+        document.addEventListener("load", loadUser());
+
+
+        function loadUser() {
+            var loc = window.location.href;
+
+            console.log(loc.substring(loc.lastIndexOf('/') + 1, loc.length));
+            postData('/AspNetUsers/LoadUserDetails?id=' + loc.substring(loc.lastIndexOf('/') + 1, loc.length))
+                .then(function (response) {
+                    console.table(response);
+
+                    document.getElementById("ID").value = response[0].Id;
+                    document.getElementById("UserName").value = response[0].UserName;
+                    document.getElementById("Email").value = response[0].Email;
+                    document.getElementById("PhoneNumber").value = response[0].PhoneNumber;
+                    //var userRole = document.getElementById("UserRole");
+                    //userRole.value = response[0].Role[0];
+                    var role = response[0].Role[0];
+
+                    //load roles
+                    postData('/AspNetUsers/GetRoles')
+                        .then(function (response) {
+                            console.table(response);
+
+                            var roleList = document.getElementById("AddRole");
+                            var select = document.createElement("select");
+                            select.id = "RoleSelected";
+
+                            roleList.appendChild(select);
+
+                            for (var i = 0; i < response.result.length; i++) {
+                                var option = document.createElement("option");
+                                option.text = response.result[i].Name;
+                                option.value = response.result[i].Name;
+                                option.id = response.result[i].Name;
+                                select.add(option);
+                            }
+                            document.getElementById(role).selected = true;
+
+                        }).catch(error => console.error(error))
+                    //end load roles
+                }).catch(error => console.error(error))
+            //end load user
+
+
+        }
+
+        var submit = document.getElementById("save");
+        submit.addEventListener("click", function () {
+            var data = new Object();
+
+            data.Id = document.getElementById("ID").value;
+            data.UserName = document.getElementById("UserName").value;
+            data.Email = document.getElementById("Email").value;
+            data.PhoneNumber = document.getElementById("PhoneNumber").value;
+            data.Role = document.getElementById("RoleSelected").value;
+
+            postData('/AspNetUsers/Edit', data)
+                .then(data => handleError(data))
+                .catch(error => console.error(error))
+        });
+        // end function save
+
+        function handleError(data) {
+            console.table(data);
+            if (data.Errors) {
+                document.getElementById("x").innerHTML = data.Errors;
+            }
+            //else {
+            //    window.location = "/Home";
+            //}
+        }//end handleError
+
+        function postData(url, data) {
+            // Default options are marked with *
+            return fetch(url, {
+                body: JSON.stringify(data), // must match 'Content-Type' header
+                cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+                credentials: 'same-origin', // include, same-origin, *omit
+                headers: {
+                    'user-agent': 'Mozilla/4.0 MDN Example',
+                    'content-type': 'application/json'
+                },
+                method: 'POST', // *GET, POST, PUT, DELETE, etc.
+                mode: 'cors', // no-cors, cors, *same-origin
+                redirect: 'follow', // manual, *follow, error
+                referrer: 'no-referrer', // *client, no-referrer
+            })
+                .then(response => response.json()) // parses response to JSON
+        }
+
+    </script>
+
+</body>

@@ -30,5 +30,7 @@ namespace MechanicsForum.Models
         public virtual DbSet<AspNetUserLogin> AspNetUserLogins { get; set; }
         public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
         public virtual DbSet<Problem> Problems { get; set; }
+
+        public System.Data.Entity.DbSet<MechanicsForum.Models.Answers> Answers { get; set; }
     }
 }
