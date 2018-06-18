@@ -16,9 +16,11 @@
         <textarea  name="Summary" id="Summary" placeholder="Summary" rows="2" cols="30"></textarea>
         <label for="desc">Description: </label>
         <textarea name="Description" placeholder="Problem Description" id="Description" rows="10" cols="30"></textarea>
-        <input type="file" name="file1" id="file1" onchange="addFileSelection(this.name);" />
-        <span id="x1" style="color:red" onclick="removeFileSelection(this);">X</span>
-        <br id="br1" />
+        <div id="filediv">
+            <input type="file" name="file1" id="file1" onchange="addFileSelection(this.name);" />
+            <span id="x1" style="color:red" onclick="removeFileSelection(this);">X</span>
+            <br id="br1" />
+        </div>
         <input type="submit" value="Submit" />
     </form>
 
@@ -41,8 +43,8 @@
             newID = (parseInt(name.substring(5, name.length - 1)) + 1);
             //check to see if the next increment of that object already exists
             if (document.getElementById("file" + newID) == null) {
-                //get the form object so you have a reference to add child to for the three object to create
-                var formObj = document.getElementById("fileSelectForm");
+               //get the div element housing the input files so you have a reference to add child to for the three object to create
+                var divElmt = document.getElementById("filediv");
                 // create the new input file object
                 var input = document.createElement("input");
                 input.type = "file";
@@ -53,7 +55,7 @@
                 input.addEventListener("change", function () {
                     addFileSelection(this.name);
                 });
-                formObj.appendChild(input);
+                divElmt.appendChild(input);
                 //create the new span tag with the red X in it
                 var spanObj = document.createElement("span");
                 spanObj.id = "x" + newID;
@@ -62,11 +64,11 @@
                     removeFileSelection(this);
                 })
                 spanObj.innerHTML = "X";
-                formObj.appendChild(spanObj);
+                divElmt.appendChild(spanObj);
                 //create the break tag to make a new line.  have to add an id so we know which one to remove when they click the X
                 var newBR = document.createElement("br");
                 newBR.id = "br" + newID;
-                formObj.appendChild(newBR);
+                divElmt.appendChild(newBR);
             }
         }
         /* This function removes the file, span, and br tags with the same number at the end

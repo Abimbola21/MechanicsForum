@@ -11,9 +11,16 @@ namespace MechanicsForum.Models
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations;
+
     public partial class Problem
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Problem()
+        {
+            this.Answers = new HashSet<Answer>();
+        }
+    
         public int Id { get; set; }
         public string Description { get; set; }
         public string UserId { get; set; }
@@ -21,11 +28,20 @@ namespace MechanicsForum.Models
         public string location { get; set; }
         public string Status { get; set; }
         public string Comment { get; set; }
-        public int Id1 { get; set; }
-        public System.DateTime PostDate { get; set; }
-        public System.DateTime ModifiedDate { get; set; }
-        public System.DateTime DateClosed { get; set; }
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        public Nullable<System.DateTime> PostDate { get; set; }
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        public Nullable<System.DateTime> ModifiedDate { get; set; }
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        public Nullable<System.DateTime> DateClosed { get; set; }
         public string SolvedBy { get; set; }
         public string ClosedBy { get; set; }
+        public string Summary { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Answer> Answers { get; set; }
     }
 }

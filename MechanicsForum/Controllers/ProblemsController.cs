@@ -14,7 +14,7 @@ namespace MechanicsForum.Controllers
 {
     public class ProblemsController : Controller
     {
-        private ApplicationDbContext db = new ApplicationDbContext();
+        private MechanicsForumEntities db = new MechanicsForumEntities();
         enum MediaType { Image, Video, Document };
 
         //GET: Logged in user
@@ -38,8 +38,14 @@ namespace MechanicsForum.Controllers
                                    a.Id,
                                    a.UserId,
                                    a.Description,
+                                   a.Summary,
                                    a.Status,
-                                   a.MediaPath
+                                   a.MediaPath,
+                                   a.ModifiedDate,
+                                   a.PostDate,
+                                   a.ClosedBy,
+                                   a.DateClosed,
+                                   latestAnswerBy = a.Answers.Select(r => r.AnsweredBy)
                                });
             if (AllProblems != null)
             { 
@@ -106,7 +112,7 @@ namespace MechanicsForum.Controllers
         //    return View(problem);                 
         //    }
         [HttpPost]
-        public ActionResult Create([Bind(Include = "Description,Media Path")] Problem problem)
+        public ActionResult Create([Bind(Include = "Summary,Description,Media Path")] Problem problem)
         { 
             var result = new List<string>();
            // Problem problem = new Problem();
@@ -167,6 +173,9 @@ namespace MechanicsForum.Controllers
            // problem.Description = Description;
             problem.Status = "posted"; 
             problem.UserId = User.Identity.GetUserName();
+            problem.PostDate = DateTime.Now;
+            //problem.ModifiedDate = DateTime.Now; 
+            //problem.DateClosed = DateTime.Now;
             if (ModelState.IsValid)
             {
              db.Problems.Add(problem);
@@ -207,7 +216,7 @@ namespace MechanicsForum.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ProblemId,Description,Status,UserId,MediaPath")] Problem problem)
+        public ActionResult Edit([Bind(Include = "Id,Description,Status,UserId,MediaPath")] Problem problem)
         {
             if (ModelState.IsValid)
             {

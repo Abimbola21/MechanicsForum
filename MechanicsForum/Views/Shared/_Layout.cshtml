@@ -22,12 +22,12 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    @if (User.Identity.IsAuthenticated)
-                    {
-                        //if (User.IsInRole("Mechanic") || User.IsInRole("User"))
-                        //{
+                    @*@if (User.Identity.IsAuthenticated)
+                    {*@
+                        @*//if (User.IsInRole("Mechanic") || User.IsInRole("User"))
+                        //{*@
                 <li>@Html.ActionLink("Problems", "Index", "Problems")</li>
-                        //}
+                        @* } *@}
 if (User.IsInRole("Admin"))
 {
             <li>@Html.ActionLink("User Management", "Index", "AspNetUsers")</li>

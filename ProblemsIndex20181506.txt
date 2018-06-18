@@ -1,0 +1,199 @@
+***********************
+INDEX.HTML PROBLEMS
+***********************
+
+@model IEnumerable<MechanicsForum.Models.Problem>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Make new Post", "Create")
+</p>
+<div id="tbldiv">
+  
+</div>
+
+
+<script>
+    window.addEventListener("load", function () {
+
+        postData('/Problems/GetAllProblems')
+            .then(function (response) {
+                console.table(response);
+
+                var tablediv = document.getElementById("tbldiv");
+                for (var i = 0; i < response.result.length; i++) {
+                    var innerdiv = document.createElement("div");
+                    //rowdiv.setAttribute("class", "rTableRow");
+                    innerdiv.setAttribute("class", "problem-summary");
+                    tablediv.appendChild(innerdiv);
+
+                    //var lblBy = document.createElement("label");
+                    //lblBy.innerHTML = "Post By"
+                    //var lbldesc = document.createElement("label");
+                    //lbldesc.innerHTML = "Description"
+                    //var lblStatus = document.createElement("label");
+                    //lblStatus.innerHTML = "Status"                    
+                    //var lblMediaPath = document.createElement("label");
+                    //lblMediaPath.innerHTML = "Media Path"
+                    var summarytxt = document.createElement("a");
+                    summarytxt.setAttribute("class", "summary");
+                    summarytxt.setAttribute("href", "/Answers/Details/" + response.result[i].Id);
+                    var status = document.createElement("div");
+                    status.setAttribute("class", "timeStatus");
+                    var timeModified = document.createElement("div");
+                    timeModified.setAttribute("class", "timeStatus");
+
+                    var statusby = document.createElement("div");
+                    statusby.setAttribute("class", "timeStatus");
+
+
+                    //var mediapath = document.createElement("div");
+
+
+                    //var cellEdit = document.createElement("a");
+                    //var cellDetails = document.createElement("a");
+                    //var cellDelete = document.createElement("a");
+
+                    //celldiv1.setAttribute("class", "rTableCell");
+                    //celldiv2.setAttribute("class", "rTableCell");
+                    //celldiv3.setAttribute("class", "rTableCell");
+                    //celldiv4.setAttribute("class", "rTableCell");
+                    //cellEdit.setAttribute("class", "rCellOther");
+                    //cellDetails.setAttribute("class", "rCellOther");
+                    //cellDelete.setAttribute("class", "rCellOther");
+
+
+                    if (response.result[i].Status == 'answered') {
+                        statusby.innerHTML = response.result[i].latestAnswerBy;
+                    }
+                    else {
+                        statusby.innerHTML = response.result[i].UserId;
+                    }
+                    summarytxt.innerHTML = response.result[i].Summary;
+                    status.innerHTML = response.result[i].Status;
+                    // var d =  Date(response.result[i].ModifiedDate);
+                    if (!response.result[i].ModifiedDate == null) {
+                        var modified = new Date(response.result[i].ModifiedDate.match(/\d+/)[0] * 1);
+                        timeModified.innerHTML = new Date(modified.getFullYear(), modified.getDate() - 1, modified.getMonth() + 1, modified.getHours(),
+                            modified.getMinutes(), modified.getSeconds());
+                    }
+                    else {
+                        var posted = new Date(response.result[i].PostDate.match(/\d+/)[0] * 1);
+                        timeModified.innerHTML = new Date(posted.getFullYear(), posted.getDate() - 1, posted.getMonth() + 1, posted.getHours(),
+                            posted.getMinutes(), posted.getSeconds());
+                    }
+
+
+                   
+                    //new Date = (newModDate[2],parseInt(newModDate[1]) - 1 , newModDate[0] , newModDate[3], newModDate[4] ,newModDate[5]);
+                    //var formattedDate = d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear();
+                    //var hours = (d.getHours() < 10) ? "0" + d.getHours() : d.getHours();
+                    //var minutes = (d.getMinutes() < 10) ? "0" + d.getMinutes() : d.getMinutes();
+                    //var formattedTime = hours + ":" + minutes;
+
+                    //timeModified.innerHTML = formattedDate + " " + formattedTime;
+                   
+                 
+                    //mediapath.innerHTML = response.result[i].MediaPath;
+
+                    //cellEdit.innerHTML = "Edit | ";
+                    //cellEdit.setAttribute("href", "/AspNetUsers/Edit/" + response.result[i].Id);
+                    //cellDetails.innerHTML = "Detail | ";
+                    //cellDetails.setAttribute("href", "/AspNetUsers/Details/" + response.result[i].Id);
+                    //cellDelete.innerHTML = "Delete";
+                    //cellDelete.setAttribute("href", "/AspNetUsers/Delete/" + response.result[i].Id);
+
+                    //  innerdiv.appendChild(lblBy);
+                    innerdiv.appendChild(summarytxt);
+                    innerdiv.appendChild(status);
+                    innerdiv.appendChild(timeModified);
+                    innerdiv.appendChild(statusby);
+                    var hr = document.createElement("hr");
+                    innerdiv.appendChild(hr);
+                  //  innerdiv.appendChild(lbldesc);
+                   
+                  //  innerdiv.appendChild(lblStatus);
+                   
+                  //  innerdiv.appendChild(lblMediaPath);
+                   // innerdiv.appendChild(mediapath);
+
+
+                    //tablediv.appendChild(cellEdit);
+                    //tablediv.appendChild(cellDetails);
+                    //tablediv.appendChild(cellDelete);
+                }
+            })
+    });
+
+    function postData(url, data) {
+        // Default options are marked with *
+        return fetch(url, {
+            body: JSON.stringify(data), // must match 'Content-Type' header
+            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: 'same-origin', // include, same-origin, *omit
+            headers: {
+                'user-agent': 'Mozilla/4.0 MDN Example',
+                'content-type': 'application/json'
+            },
+            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            mode: 'cors', // no-cors, cors, *same-origin
+            redirect: 'follow', // manual, *follow, error
+            referrer: 'no-referrer', // *client, no-referrer
+        })
+            .then(response => response.json()) // parses response to JSON
+    }
+
+</script>
+
+
+
+
+@*<table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MediaPath)
+            </th>
+            <th></th>
+        </tr>
+
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MediaPath)
+            </td>
+            <td>
+                 @if (User.Identity.IsAuthenticated)
+                     {
+                         if (User.IsInRole("Mechanic"))
+                         {
+                @Html.ActionLink("Edit", "Edit", new { id = item.ProblemId }) |
+    @Html.ActionLink("Details", "Details", new { id = item.ProblemId }) |
+    @Html.ActionLink("Delete", "Delete", new { id = item.ProblemId })
+            </td>
+        </tr>
+    }
+
+    </table>*@

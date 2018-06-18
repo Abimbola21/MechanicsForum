@@ -262,13 +262,25 @@ namespace MechanicsForum.Controllers
         //    return View(aspNetUser);
         //}
 
-        public JsonResult Edit (string Id, string UserName, string Email, string PhoneNumber, string Role)
+        public JsonResult Edit (string Id, string UserName, string Email, string PhoneNumber,List<string> Role)
         {
+            //var UserManager = new UserManager<ApplicationUser>(new )
+
             var user = UserManager.FindById(Id);
+            //ApplicationUser user = UserManager.FindByEmail(Email);
+
+            
+            if(user == null)
+            {
+                return Json(new { message = "User Not found" }, JsonRequestBehavior.AllowGet);
+            }
             user.UserName = UserName;
             user.Email = Email;
             user.PhoneNumber = PhoneNumber;
-            UserManager.AddToRole(user.Id, Role);
+            foreach (var r in Role)
+            {
+                UserManager.AddToRole(user.Id, r);
+            }
 
             var result = UserManager.Update(user);
             if (result.Succeeded)

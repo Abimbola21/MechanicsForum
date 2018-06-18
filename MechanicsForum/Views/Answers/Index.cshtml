@@ -1,4 +1,4 @@
-﻿@model IEnumerable<MechanicsForum.Models.Answers>
+﻿@model IEnumerable<MechanicsForum.Models.Answer>
 
 @{
     ViewBag.Title = "Index";
@@ -12,13 +12,13 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.ProblemId)
+            @Html.DisplayNameFor(model => model.Problem_Id)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.AnsweredBy)
+            @Html.DisplayNameFor(model => model.AnswerdBy)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Answer)
+            @Html.DisplayNameFor(model => model.AnswerDesc)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.MediaPath)
@@ -35,13 +35,13 @@
 @foreach (var item in Model) {
     <tr>
         <td>
-            @Html.DisplayFor(modelItem => item.ProblemId)
+            @Html.DisplayFor(modelItem => item.Problem_Id)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.AnsweredBy)
+            @Html.DisplayFor(modelItem => item.AnswerdBy)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Answer)
+            @Html.DisplayFor(modelItem => item.AnswerDesc)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.MediaPath)

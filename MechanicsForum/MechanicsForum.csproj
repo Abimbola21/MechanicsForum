@@ -231,69 +231,49 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201805221547533_InitialCreate.cs" />
-    <Compile Include="Migrations\201805221547533_InitialCreate.Designer.cs">
-      <DependentUpon>201805221547533_InitialCreate.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201805231649358_Problem.cs" />
-    <Compile Include="Migrations\201805231649358_Problem.Designer.cs">
-      <DependentUpon>201805231649358_Problem.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201805241651534_location.cs" />
-    <Compile Include="Migrations\201805241651534_location.Designer.cs">
-      <DependentUpon>201805241651534_location.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201805251536338_status.cs" />
-    <Compile Include="Migrations\201805251536338_status.Designer.cs">
-      <DependentUpon>201805251536338_status.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201806081517042_ProblemsUpdate.cs" />
-    <Compile Include="Migrations\201806081517042_ProblemsUpdate.Designer.cs">
-      <DependentUpon>201806081517042_ProblemsUpdate.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201806081530486_ProblemsUpdate2.cs" />
-    <Compile Include="Migrations\201806081530486_ProblemsUpdate2.Designer.cs">
-      <DependentUpon>201806081530486_ProblemsUpdate2.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201806081606089_AnswerTable.cs" />
-    <Compile Include="Migrations\201806081606089_AnswerTable.Designer.cs">
-      <DependentUpon>201806081606089_AnswerTable.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
-    <Compile Include="Models\Answers.cs" />
+    <Compile Include="Models\Answer.cs">
+      <DependentUpon>User.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\AspNetRole.cs">
-      <DependentUpon>UserAdmin.tt</DependentUpon>
+      <DependentUpon>User.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\AspNetUser.cs">
-      <DependentUpon>UserAdmin.tt</DependentUpon>
+      <DependentUpon>User.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\AspNetUserClaim.cs">
-      <DependentUpon>UserAdmin.tt</DependentUpon>
+      <DependentUpon>User.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\AspNetUserLogin.cs">
-      <DependentUpon>UserAdmin.tt</DependentUpon>
+      <DependentUpon>User.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\C__MigrationHistory.cs">
+      <DependentUpon>User.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Problem.cs">
-      <DependentUpon>UserAdmin.tt</DependentUpon>
+      <DependentUpon>User.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Role.cs" />
-    <Compile Include="Models\UserAdmin.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>UserAdmin.Context.tt</DependentUpon>
+    <Compile Include="Models\sysdiagram.cs">
+      <DependentUpon>User.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\UserAdmin.cs">
+    <Compile Include="Models\User.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>UserAdmin.tt</DependentUpon>
+      <DependentUpon>User.Context.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\UserAdmin.Designer.cs">
+    <Compile Include="Models\User.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>UserAdmin.edmx</DependentUpon>
+      <DependentUpon>User.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\User.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>User.edmx</DependentUpon>
     </Compile>
     <Compile Include="Models\UserModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -306,27 +286,27 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
-    <Content Include="Models\UserAdmin.Context.tt">
+    <Content Include="Models\User.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>UserAdmin.edmx</DependentUpon>
-      <LastGenOutput>UserAdmin.Context.cs</LastGenOutput>
+      <DependentUpon>User.edmx</DependentUpon>
+      <LastGenOutput>User.Context.cs</LastGenOutput>
     </Content>
-    <Content Include="Models\UserAdmin.tt">
+    <Content Include="Models\User.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>UserAdmin.edmx</DependentUpon>
-      <LastGenOutput>UserAdmin.cs</LastGenOutput>
+      <DependentUpon>User.edmx</DependentUpon>
+      <LastGenOutput>User.cs</LastGenOutput>
     </Content>
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <EntityDeploy Include="Models\UserAdmin.edmx">
+    <EntityDeploy Include="Models\User.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>UserAdmin.Designer.cs</LastGenOutput>
+      <LastGenOutput>User.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <Content Include="Models\UserAdmin.edmx.diagram">
-      <DependentUpon>UserAdmin.edmx</DependentUpon>
+    <Content Include="Models\User.edmx.diagram">
+      <DependentUpon>User.edmx</DependentUpon>
     </Content>
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
@@ -408,29 +388,6 @@
   <ItemGroup>
     <None Include="packages.config" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Migrations\201805221547533_InitialCreate.resx">
-      <DependentUpon>201805221547533_InitialCreate.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201805231649358_Problem.resx">
-      <DependentUpon>201805231649358_Problem.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201805241651534_location.resx">
-      <DependentUpon>201805241651534_location.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201805251536338_status.resx">
-      <DependentUpon>201805251536338_status.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201806081517042_ProblemsUpdate.resx">
-      <DependentUpon>201806081517042_ProblemsUpdate.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201806081530486_ProblemsUpdate2.resx">
-      <DependentUpon>201806081530486_ProblemsUpdate2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201806081606089_AnswerTable.resx">
-      <DependentUpon>201806081606089_AnswerTable.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

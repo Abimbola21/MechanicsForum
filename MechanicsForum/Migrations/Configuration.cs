@@ -10,7 +10,6 @@ namespace MechanicsForum.Migrations
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
-            ContextKey = "MechanicsForum.Models.ApplicationDbContext";
         }
 
         protected override void Seed(MechanicsForum.Models.ApplicationDbContext context)

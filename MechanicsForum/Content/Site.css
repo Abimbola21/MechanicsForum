@@ -17,31 +17,88 @@
 }
 
 /* Set width on the form input elements since they're 100% wide by default */
-input,
-select,
+input, select,
 textarea {
     max-width: 280px;
 }
 
+#tbldiv {
+    overflow: auto;
+    margin-bottom: 30px;
+}
 
+#problem-header {
+    font-size: 40px;
+    clear: both;
+    margin-bottom: 1em;
+    border-bottom: 1px solid #e4e6e8;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+}
+.grid {
+    display: flex;
+}
+.problem-summary {
+    overflow: hidden;
+    float: left;
+    width: 1000px;
+}
+
+.summary {
+    width: 800px;
+    padding: 0;
+    float: left;
+}
+
+.timeStatus {
+    width: auto;
+    line-height: inherit;
+    padding-top: 4px;
+    white-space: nowrap;
+}
+
+.user-info {
+    box-sizing: border-box;
+    padding: 5px 6px 7px 7px;
+    width: 200px;
+    color: #6a737c;
+}
+    .user-info .user-action-time {
+    margin-top: 1px;
+    margin-bottom: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+}
+.user-info .user-gravatar32 + .user-details {
+    margin-left: 8px;
+    width: calc(100% - 40px);
+}
+
+.user-info .user-details {
+    float: left;
+    width: 100%;
+}
+
+.user-details {
+    line-height: 17px;
+    word-wrap: break-word;
+}
+
+.post-text {
+    margin-bottom: 5px;
+    word-wrap: break-word;
+    font-size: 15px;
+    line-height: 1.3;
+    display: block;
+    color: #393318;
+}
 .rTable {
     display: block;
     width: 100%;
     border: 1px solid black;
 }
-    /*.rTable div {
-        border: 0.5px dotted red;
-    }
 
-        .rTable div div  {
-            border: 1px solid #999999;
-            float: left;
-            height: 25px;
-            overflow: hidden;
-            padding: 3px 1.8%;
-            width: 20%;
-  
-        }*/
  .rTableHeading, .rTableBody, .rTableFoot, .rTableRow {
         clear: both;
     }
@@ -75,8 +132,9 @@ textarea {
             clear: both;
             height: 0;
         }
+
 @media (min-width:979px) {
-    ul.nav li.dropdown:hover > div.dropdown-menu {
+    ul .nav li.dropdown:hover > div.dropdown-menu {
         display: block;
     }
 

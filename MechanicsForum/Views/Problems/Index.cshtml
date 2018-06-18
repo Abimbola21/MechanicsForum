@@ -23,64 +23,59 @@
 
                 var tablediv = document.getElementById("tbldiv");
                 for (var i = 0; i < response.result.length; i++) {
+                    //Create two Inner divs to divide each block of result from the for loop
+                    //The first one serves the purpose of having an horizontal rule divide each block
+                    var innerdiv1 = document.createElement("div");
                     var innerdiv = document.createElement("div");
-                   // rowdiv.setAttribute("class", "rTableRow");
-                    tablediv.appendChild(innerdiv);
-
-                    //var lblBy = document.createElement("label");
-                    //lblBy.innerHTML = "Post By"
-                    //var lbldesc = document.createElement("label");
-                    //lbldesc.innerHTML = "Description"
-                    //var lblStatus = document.createElement("label");
-                    //lblStatus.innerHTML = "Status"                    
-                    //var lblMediaPath = document.createElement("label");
-                    //lblMediaPath.innerHTML = "Media Path"
-
-                    var statusby = document.createElement("div");
+                    //define the class of the inner div
+                    innerdiv1.setAttribute("class", "problem-summary");
+                    //append the inner div to the outer div
+                    tablediv.appendChild(innerdiv1);
+                    innerdiv1.appendChild(innerdiv);
+                    //Summary Text is the Summary of each problem and it will be a link
                     var summarytxt = document.createElement("a");
-                    summarytxt.setAttribute("href", "/Problems/Details/" + response.result[i].Id);
-                    var status = document.createElement("div");
-                    var mediapath = document.createElement("div");
+                    summarytxt.setAttribute("class", "summary");
+                    //define where the link routes to when it is clicked
+                    summarytxt.setAttribute("href", "/Answers/Details/" + response.result[i].Id);
+                    //below variables will hold elements that will store values from our problem result set
+                    //var status = document.createElement("div");
+                    //status.setAttribute("class", "timeStatus");
+                    var post_ModDate = document.createElement("div");
+                    //post_ModDate.setAttribute("class", "timeStatus");
+                    var statusby = document.createElement("div");
+                    //statusby.setAttribute("class", "timeStatus");
+
+                    //assign values to the elements created above
+                    summarytxt.innerHTML = response.result[i].Summary;
+                    if (response.result[i].Status == 'answered') {
+                        statusby.innerHTML =  response.result[i].Status + ' ' + response.result[i].latestAnswerBy;
+                    }
+                    else {
+                        statusby.innerHTML = response.result[i].Status + ' ' + response.result[i].UserId;
+                    }                  
+                   
+                    // var d =  Date(response.result[i].ModifiedDate);
+                    //if Modified date is not null, return modified date rather than the posted date
+                    //else return posted date
+                    if (response.result[i].ModifiedDate != null) {
+                        var modified = new Date(response.result[i].ModifiedDate.match(/\d+/)[0] * 1);
+                        post_ModDate.innerHTML = new Date(modified.getFullYear(), modified.getDate() - 1, modified.getMonth() + 1, modified.getHours(),
+                            modified.getMinutes(), modified.getSeconds());
+                    }
+                    else {
+                        var posted = new Date(response.result[i].PostDate.match(/\d+/)[0] * 1);
+                        post_ModDate.innerHTML = new Date(posted.getFullYear(), posted.getDate() - 1, posted.getMonth() + 1, posted.getHours(),
+                            posted.getMinutes(), posted.getSeconds());
+                    }
 
 
-                    //var cellEdit = document.createElement("a");
-                    //var cellDetails = document.createElement("a");
-                    //var cellDelete = document.createElement("a");
-
-                    //celldiv1.setAttribute("class", "rTableCell");
-                    //celldiv2.setAttribute("class", "rTableCell");
-                    //celldiv3.setAttribute("class", "rTableCell");
-                    //celldiv4.setAttribute("class", "rTableCell");
-                    //cellEdit.setAttribute("class", "rCellOther");
-                    //cellDetails.setAttribute("class", "rCellOther");
-                    //cellDelete.setAttribute("class", "rCellOther");
-
-                    if (response.result[i].Status == 'answered')
-                    postBy.innerHTML = response.result[i].UserId;
-                    desctxt.innerHTML = response.result[i].Description;
-                    status.innerHTML = response.result[i].Status;
-                    mediapath.innerHTML = response.result[i].MediaPath;
-
-                    //cellEdit.innerHTML = "Edit | ";
-                    //cellEdit.setAttribute("href", "/AspNetUsers/Edit/" + response.result[i].Id);
-                    //cellDetails.innerHTML = "Detail | ";
-                    //cellDetails.setAttribute("href", "/AspNetUsers/Details/" + response.result[i].Id);
-                    //cellDelete.innerHTML = "Delete";
-                    //cellDelete.setAttribute("href", "/AspNetUsers/Delete/" + response.result[i].Id);
-
-                  //  innerdiv.appendChild(lblBy);
-                    innerdiv.appendChild(postBy);
-                  //  innerdiv.appendChild(lbldesc);
-                    innerdiv.appendChild(desctxt);
-                  //  innerdiv.appendChild(lblStatus);
-                    innerdiv.appendChild(status);
-                  //  innerdiv.appendChild(lblMediaPath);
-                    innerdiv.appendChild(mediapath);
-
-
-                    //tablediv.appendChild(cellEdit);
-                    //tablediv.appendChild(cellDetails);
-                    //tablediv.appendChild(cellDelete);
+                    innerdiv.appendChild(summarytxt);
+                    // innerdiv.appendChild(status);
+                    innerdiv.appendChild(statusby);
+                    innerdiv.appendChild(post_ModDate);
+                    
+                    var hr = document.createElement("hr");
+                    innerdiv1.appendChild(hr);
                 }
             })
     });
@@ -105,50 +100,3 @@
 
 </script>
 
-
-
-
-@*<table class="table">
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Status)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UserId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MediaPath)
-            </th>
-            <th></th>
-        </tr>
-
-    @foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UserId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MediaPath)
-            </td>
-            <td>
-                 @if (User.Identity.IsAuthenticated)
-                     {
-                         if (User.IsInRole("Mechanic"))
-                         {
-                @Html.ActionLink("Edit", "Edit", new { id = item.ProblemId }) |
-    @Html.ActionLink("Details", "Details", new { id = item.ProblemId }) |
-    @Html.ActionLink("Delete", "Delete", new { id = item.ProblemId })
-            </td>
-        </tr>
-    }
-
-    </table>*@

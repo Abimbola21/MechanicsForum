@@ -1,66 +1,172 @@
-﻿@model MechanicsForum.Models.Answers
+﻿@model MechanicsForum.Models.Answer
 
-@{
-    ViewBag.Title = "Details";
-}
+<h2 id="problemSummary"></h2>
 
-<h2>Details</h2>
+<div id="problem-header">
 
-<div>
-    <h4>Answers</h4>
+</div>
+<div id="answers">
+
+</div>
+<div class="form-horizontal">
     <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.ProblemId)
-        </dt>
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-        <dd>
-            @Html.DisplayFor(model => model.ProblemId)
-        </dd>
+    <form id="fileSelectForm" action="\Answers\SubmitAnswer" method="post" enctype="multipart/form-data">
+        <textarea name="AnswerDesc" placeholder="Answer here....." id="answer" class="answertxt" rows="10" cols="200"></textarea>
+        <label for="desc">Upload Media: </label>
+        <div id="filediv">
+            <input type="file" name="file1" id="file1" onchange="addFileSelection(this.name);" />
+            <span id="x1" style="color:red" onclick="removeFileSelection(this);">X</span>
+            <br id="br1" />
+        </div>
+        <input type="hidden" name="Problem_Id" id="problemId"/>
+        <input type="submit" value="Submit" />
+    </form>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.AnsweredBy)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.AnsweredBy)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Answer)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Answer)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.MediaPath)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.MediaPath)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.AnswerDate)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.AnswerDate)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.ModifiedDate)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.ModifiedDate)
-        </dd>
-
-    </dl>
 </div>
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
+    @* @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |*@
+    @Html.ActionLink("Back to List","Index","Problems")
 </p>
+
+<script>
+    document.addEventListener("load", loadAnswers());
+
+
+    function loadAnswers() {
+        var loc = window.location.href;
+        //the expression in the below log statement returns the string after the last / of the url
+        //which is stored in the above variable loc. 
+        console.log(loc.substring(loc.lastIndexOf('/') + 1, loc.length));
+
+        //I created an hidden input element in the form above and assign to it the string after the last / of the url
+        // in this case, this is the problem Id of the problem we are examining
+        var problemId = document.getElementById("problemId");
+        problemId.value = loc.substring(loc.lastIndexOf('/') + 1, loc.length);
+
+        //the function below calls the method GetProblemAnswers in the Answers controller with the id of 
+        //the problem in question and return all the answers that have been provided to this question
+        postData('/Answers/GetProblemAnswers?id=' + loc.substring(loc.lastIndexOf('/') + 1, loc.length))
+            .then(function (response) {
+                console.table(response);
+
+                //get div of the problem and display the question
+                var problemDiv = document.getElementById("problem-header");
+                problemDiv.setAttribute("class", "grid");
+                problemDiv.innerHTML = response.result[0].Summary;
+
+                //loop through answers to the above question and display
+                for (var i = 0; i < response.result.length; i++) {
+                    var answerDiv = document.getElementById("answers");
+
+                    var divDesc = document.createElement("div");
+                    divDesc.setAttribute("class", "post-text");
+                    divDesc.innerHTML = response.result[i].AnswerDesc
+                    //div for media posted by user
+                    var divMedia = document.createElement("div");
+                    divMedia.setAttribute("class", "post-text");
+                    divMedia.innerHTML = response.result[i].MediaPath
+
+                    //div for overall info of user who posts answers
+                    var userInfo = document.createElement("div");
+                    userInfo.setAttribute("class", "user-info");
+
+                    //inner divs in user info div
+                    //div for username of the person answering
+                    var divBy = document.createElement("div");
+                    divBy.setAttribute("class", "user-action-time");
+                    //div for date of answer
+                    var divAnswerDate = document.createElement("div");
+                    if (response.result[i].AnsweredBy != null) {
+                        divBy.innerHTML = "answered by " + response.result[i].AnsweredBy;                                        
+                        divAnswerDate.innerHTML = new Date(response.result[i].AnswerDate.match(/\d+/)[0] * 1);
+                    }
+                    var hr = document.createElement("hr");
+
+                    answerDiv.appendChild(divDesc);
+                    answerDiv.appendChild(userInfo);
+                    userInfo.appendChild(divBy);
+                    userInfo.appendChild(divAnswerDate);
+                    answerDiv.appendChild(hr);
+                }
+
+            }).catch(error => console.error(error))
+    }
+       //end load answers
+
+
+    function postData(url, data) {
+        // Default options are marked with *
+        return fetch(url, {
+            body: JSON.stringify(data), // must match 'Content-Type' header
+            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: 'same-origin', // include, same-origin, *omit
+            headers: {
+                'user-agent': 'Mozilla/4.0 MDN Example',
+                'content-type': 'application/json'
+            },
+            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            mode: 'cors', // no-cors, cors, *same-origin
+            redirect: 'follow', // manual, *follow, error
+            referrer: 'no-referrer', // *client, no-referrer
+        })
+            .then(response => response.json()) // parses response to JSON
+    }
+    /* This function recieves a name (string) and finds that element in the document, then removes it from it's parent node.
+     * You have to use the removeChild method on the parent node of the object.
+     */
+    function removeElement(name) {
+        var elementToRemove = document.getElementById(name);
+        elementToRemove.parentNode.removeChild(elementToRemove);
+    }
+    /* This function recieves a name (string) and attempts to find it in the document object.  it's going to increment the number at the end
+     * of the name and create a new object, but only if that object doesn't already exist.
+     * It adds three elements, a file input, a red X inside a span tag, and a break tag
+     */
+    function addFileSelection(name) {
+        // skip the "file" part of the name and grab the number that is the rest
+        newID = (parseInt(name.substring(5, name.length - 1)) + 1);
+        //check to see if the next increment of that object already exists
+        if (document.getElementById("file" + newID) == null) {
+            //get the div element housing the input files so you have a reference to add child to for the three object to create
+            var divElmt = document.getElementById("filediv");
+            // create the new input file object
+            var input = document.createElement("input");
+            input.type = "file";
+            var newName = "file" + newID;
+            input.name = newName;
+            input.id = newName;
+            // this is the hard part.  anonymous function that calls the addFileSelection function and passes it the name
+            input.addEventListener("change", function () {
+                addFileSelection(this.name);
+            });
+            divElmt.appendChild(input);
+            //create the new span tag with the red X in it
+            var spanObj = document.createElement("span");
+            spanObj.id = "x" + newID;
+            spanObj.style = "color:red";
+            spanObj.addEventListener("click", function () {
+                removeFileSelection(this);
+            })
+            spanObj.innerHTML = "X";
+            divElmt.appendChild(spanObj);
+            //create the break tag to make a new line.  have to add an id so we know which one to remove when they click the X
+            var newBR = document.createElement("br");
+            newBR.id = "br" + newID;
+            divElmt.appendChild(newBR);
+        }
+    }
+    /* This function removes the file, span, and br tags with the same number at the end
+     */
+    function removeFileSelection(o) {
+        var elementIdNumber = parseInt(o.id.substring(2, o.id.length - 1));
+        var elementToDelete = document.getElementById("file" + elementIdNumber);
+        if (elementToDelete.files.length > 0) {
+            removeElement("file" + elementIdNumber);
+            removeElement("x" + elementIdNumber);
+            removeElement("br" + elementIdNumber);
+        }
+
+    }
+</script>
