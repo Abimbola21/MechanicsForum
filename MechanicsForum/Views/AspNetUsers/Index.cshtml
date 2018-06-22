@@ -7,17 +7,16 @@
 </style>
 
 <body id="home">
-    <h2>Index</h2>
+    <h2>Manage Users</h2>
 
     <p>
-        @Html.ActionLink("Create New Account", "Create")
+        @Html.ActionLink("Create New", "Create")
     </p>
 
     <div class="rTable" id="tbldiv">
         <div class="rTableRow">
             <div class="rTableHead"><strong>User Name</strong></div>
             <div class="rTableHead"><span style="font-weight: bold;">Email</span></div>
-            <div class="rTableHead">Phone Number</div>
             <div class="rTableHead">Role</div>
         </div>
     </div>
@@ -44,18 +43,16 @@
                     var cellDetails = document.createElement("a");
                     var cellDelete = document.createElement("a");
 
-                    celldiv1.setAttribute("class", "rTableCell");
-                    celldiv2.setAttribute("class", "rTableCell");
-                    celldiv3.setAttribute("class", "rTableCell");
-                    celldiv4.setAttribute("class", "rTableCell");
-                    cellEdit.setAttribute("class", "rCellOther");
-                    cellDetails.setAttribute("class", "rCellOther");
-                    cellDelete.setAttribute("class", "rCellOther");
+                    celldiv1.setAttribute("class", "rTableCell col-sm-2 col-md-2");
+                    celldiv2.setAttribute("class", "rTableCell col-sm-2 col-md-2");
+                    celldiv3.setAttribute("class", "rTableCell col-sm-2 col-md-2");
+                    cellEdit.setAttribute("class", "rCellOther col-sm-2 col-md-2");
+                    cellDetails.setAttribute("class", "rCellOther col-sm-2 col-md-2");
+                    cellDelete.setAttribute("class", "rCellOther col-sm-2 col-md-2");
 
                     celldiv1.innerHTML = response.result[i].UserName;
                     celldiv2.innerHTML = response.result[i].Email;
-                    celldiv3.innerHTML = response.result[i].PhoneNumber;
-                    celldiv4.innerHTML = response.result[i].Role;
+                    celldiv3.innerHTML = response.result[i].Role;
                     cellEdit.innerHTML = "Edit | ";
                     cellEdit.setAttribute("href", "/AspNetUsers/Edit/"+response.result[i].Id);
                     cellDetails.innerHTML = "Detail | ";
@@ -66,7 +63,6 @@
                     tablediv.appendChild(celldiv1);
                     tablediv.appendChild(celldiv2);
                     tablediv.appendChild(celldiv3);
-                    tablediv.appendChild(celldiv4);
                     tablediv.appendChild(cellEdit);
                     tablediv.appendChild(cellDetails);
                     tablediv.appendChild(cellDelete);

@@ -4,17 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="MechanicsForumModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-        <EntityType Name="__MigrationHistory">
-          <Key>
-            <PropertyRef Name="MigrationId" />
-            <PropertyRef Name="ContextKey" />
-          </Key>
-          <Property Name="MigrationId" Type="nvarchar" MaxLength="150" Nullable="false" />
-          <Property Name="ContextKey" Type="nvarchar" MaxLength="300" Nullable="false" />
-          <Property Name="Model" Type="varbinary(max)" Nullable="false" />
-          <Property Name="ProductVersion" Type="nvarchar" MaxLength="32" Nullable="false" />
-        </EntityType>
+      <Schema Namespace="MechanicsForumModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Answers">
           <Key>
             <PropertyRef Name="Id" />
@@ -97,16 +87,6 @@
           <Property Name="ClosedBy" Type="nvarchar(max)" />
           <Property Name="Summary" Type="nvarchar" MaxLength="50" />
         </EntityType>
-        <EntityType Name="sysdiagrams">
-          <Key>
-            <PropertyRef Name="diagram_id" />
-          </Key>
-          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
-          <Property Name="principal_id" Type="int" Nullable="false" />
-          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="version" Type="int" />
-          <Property Name="definition" Type="varbinary(max)" />
-        </EntityType>
         <Association Name="FK__Answers__Problem__06CD04F7">
           <End Role="Problems" Type="Self.Problems" Multiplicity="1" />
           <End Role="Answers" Type="Self.Answers" Multiplicity="*" />
@@ -176,7 +156,6 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="MechanicsForumModelStoreContainer">
-          <EntitySet Name="__MigrationHistory" EntityType="Self.__MigrationHistory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Answers" EntityType="Self.Answers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRoles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetUserClaims" EntityType="Self.AspNetUserClaims" Schema="dbo" store:Type="Tables" />
@@ -184,7 +163,6 @@
           <EntitySet Name="AspNetUserRoles" EntityType="Self.AspNetUserRoles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUsers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Problems" EntityType="Self.Problems" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK__Answers__Problem__06CD04F7" Association="Self.FK__Answers__Problem__06CD04F7">
             <End Role="Problems" EntitySet="Problems" />
             <End Role="Answers" EntitySet="Answers" />
@@ -206,33 +184,24 @@
             <End Role="AspNetUserRoles" EntitySet="AspNetUserRoles" />
           </AssociationSet>
         </EntityContainer>
-      </Schema></edmx:StorageModels>
+      </Schema>
+    </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="MechanicsForumModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-        <EntityType Name="C__MigrationHistory">
-          <Key>
-            <PropertyRef Name="MigrationId" />
-            <PropertyRef Name="ContextKey" />
-          </Key>
-          <Property Name="MigrationId" Type="String" MaxLength="150" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="ContextKey" Type="String" MaxLength="300" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Model" Type="Binary" MaxLength="Max" FixedLength="false" Nullable="false" />
-          <Property Name="ProductVersion" Type="String" MaxLength="32" FixedLength="false" Unicode="true" Nullable="false" />
-        </EntityType>
         <EntityType Name="Answer">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="AnswerDesc" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="AnsweredBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="MediaPath" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="AnswerDate" Type="DateTime" Precision="3" />
           <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
           <Property Name="Problem_Id" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Problem" Relationship="Self.FK__Answers__Problem__06CD04F7" FromRole="Answers" ToRole="Problems" />
-          <Property Name="AnsweredBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="CountModified" Type="Int32" />
+          <NavigationProperty Name="Problem" Relationship="Self.FK__Answers__Problem__06CD04F7" FromRole="Answers" ToRole="Problems" />
         </EntityType>
         <EntityType Name="AspNetRole">
           <Key>
@@ -302,16 +271,6 @@
           <Property Name="Summary" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Answers" Relationship="Self.FK__Answers__Problem__06CD04F7" FromRole="Problems" ToRole="Answers" />
         </EntityType>
-        <EntityType Name="sysdiagram">
-          <Key>
-            <PropertyRef Name="diagram_id" />
-          </Key>
-          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="principal_id" Type="Int32" Nullable="false" />
-          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="version" Type="Int32" />
-          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
-        </EntityType>
         <Association Name="FK__Answers__Problem__06CD04F7">
           <End Role="Problems" Type="Self.Problem" Multiplicity="1" />
           <End Role="Answers" Type="Self.Answer" Multiplicity="*" />
@@ -357,14 +316,12 @@
           <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="*" />
         </Association>
         <EntityContainer Name="MechanicsForumEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="C__MigrationHistory" EntityType="Self.C__MigrationHistory" />
           <EntitySet Name="Answers" EntityType="Self.Answer" />
           <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRole" />
           <EntitySet Name="AspNetUserClaims" EntityType="Self.AspNetUserClaim" />
           <EntitySet Name="AspNetUserLogins" EntityType="Self.AspNetUserLogin" />
           <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUser" />
           <EntitySet Name="Problems" EntityType="Self.Problem" />
-          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
           <AssociationSet Name="FK__Answers__Problem__06CD04F7" Association="Self.FK__Answers__Problem__06CD04F7">
             <End Role="Problems" EntitySet="Problems" />
             <End Role="Answers" EntitySet="Answers" />
@@ -388,27 +345,17 @@
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="MechanicsForumModelStoreContainer" CdmEntityContainer="MechanicsForumEntities">
-          <EntitySetMapping Name="C__MigrationHistory">
-            <EntityTypeMapping TypeName="MechanicsForumModel.C__MigrationHistory">
-              <MappingFragment StoreEntitySet="__MigrationHistory">
-                <ScalarProperty Name="MigrationId" ColumnName="MigrationId" />
-                <ScalarProperty Name="ContextKey" ColumnName="ContextKey" />
-                <ScalarProperty Name="Model" ColumnName="Model" />
-                <ScalarProperty Name="ProductVersion" ColumnName="ProductVersion" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Answers">
             <EntityTypeMapping TypeName="MechanicsForumModel.Answer">
               <MappingFragment StoreEntitySet="Answers">
-                <ScalarProperty Name="CountModified" ColumnName="CountModified" />
-                <ScalarProperty Name="AnsweredBy" ColumnName="AnsweredBy" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="AnswerDesc" ColumnName="AnswerDesc" />
+                <ScalarProperty Name="AnsweredBy" ColumnName="AnsweredBy" />
                 <ScalarProperty Name="MediaPath" ColumnName="MediaPath" />
                 <ScalarProperty Name="AnswerDate" ColumnName="AnswerDate" />
                 <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
                 <ScalarProperty Name="Problem_Id" ColumnName="Problem_Id" />
+                <ScalarProperty Name="CountModified" ColumnName="CountModified" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -473,17 +420,6 @@
                 <ScalarProperty Name="SolvedBy" ColumnName="SolvedBy" />
                 <ScalarProperty Name="ClosedBy" ColumnName="ClosedBy" />
                 <ScalarProperty Name="Summary" ColumnName="Summary" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="sysdiagrams">
-            <EntityTypeMapping TypeName="MechanicsForumModel.sysdiagram">
-              <MappingFragment StoreEntitySet="sysdiagrams">
-                <ScalarProperty Name="name" ColumnName="name" />
-                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
-                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
-                <ScalarProperty Name="version" ColumnName="version" />
-                <ScalarProperty Name="definition" ColumnName="definition" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

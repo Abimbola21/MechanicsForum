@@ -11,21 +11,16 @@ namespace MechanicsForum.Models
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-
+    
     public partial class Answer
     {
         public int Id { get; set; }
         public string AnswerDesc { get; set; }
+        public string AnsweredBy { get; set; }
         public string MediaPath { get; set; }
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public Nullable<System.DateTime> AnswerDate { get; set; }
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public Nullable<System.DateTime> ModifiedDate { get; set; }
         public int Problem_Id { get; set; }
-        public string AnsweredBy { get; set; }
         public Nullable<int> CountModified { get; set; }
     
         public virtual Problem Problem { get; set; }

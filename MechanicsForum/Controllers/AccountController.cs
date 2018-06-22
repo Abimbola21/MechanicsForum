@@ -92,6 +92,10 @@ namespace MechanicsForum.Controllers
                     {
                         return RedirectToAction("Index", "Problems");
                     }
+                    if ((UserManager.IsInRole(user.Id, "SuperAdmin")))
+                    {
+                        return RedirectToAction("Index", "AspNetRoles");
+                    }
                     if ((UserManager.IsInRole(user.Id, "Admin")))
                     {
                       return RedirectToAction("Index", "AspNetUsers");

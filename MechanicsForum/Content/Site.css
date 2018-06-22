@@ -122,7 +122,7 @@ textarea {
     height: 25px;
     overflow: hidden;
     padding: 3px 1.8%;
-    width: 5%;
+    width: 6%;
 }
             .rTable:after {
             visibility: hidden;
@@ -132,6 +132,12 @@ textarea {
             clear: both;
             height: 0;
         }
+
+         .divStyle label { margin-right:20px; padding-left: 10px;}
+/*.divStyle checkbox {
+    border: 1px solid red;
+    margin-right: 20px
+}*/
 
 @media (min-width:979px) {
     ul .nav li.dropdown:hover > div.dropdown-menu {

@@ -13,7 +13,7 @@ namespace MechanicsForum.Models
         [Display(Name = "UserName")]
         public string UserName { get; set; }
 
-        [Required]
+       
         [Display(Name = "Category")]
         public string UserRoles { get; set; }
     }

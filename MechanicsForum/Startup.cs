@@ -12,31 +12,28 @@ namespace MechanicsForum
         public void Configuration(IAppBuilder app)
         {
             ConfigureAuth(app);
-            createRolesandUsers();
+            CreateRolesandUsers();
         }
         // In this method we will create default User roles and Admin user for login   
-        private void createRolesandUsers()
+        private void CreateRolesandUsers()
         {
             ApplicationDbContext context = new ApplicationDbContext();
-
             var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(context));
             var UserManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(context));
 
-
             // In Startup iam creating first Admin Role and creating a default Admin User    
-            if (!roleManager.RoleExists("Admin"))
+            if (!roleManager.RoleExists("SuperAdmin"))
             {
-
-                // first we create Admin role   
+                // first we create Super Admin role   
                 var role = new IdentityRole();
-                role.Name = "Admin";
+                role.Name = "SuperAdmin";
                 roleManager.Create(role);
 
                 //Here we create a Admin super user who will maintain the website                  
 
                 var user = new ApplicationUser();
-                user.UserName = "Administrator";
-                user.Email = "bimzy4me@hotmail.com";
+                user.UserName = "superAdmin";
+                user.Email = "victoria_lasode@yahoo.co.uk";
                 string userPWD = "Admin@01";
 
                 var chkUser = UserManager.Create(user, userPWD);
@@ -44,26 +41,11 @@ namespace MechanicsForum
                 //Add default User to Role Admin   
                 if (chkUser.Succeeded)
                 {
-                    var result1 = UserManager.AddToRole(user.Id, "Admin");
+                    var result = UserManager.AddToRole(user.Id, "SuperAdmin");
 
                 }
             }
 
-            // creating Creating Mechanics role    
-            if (!roleManager.RoleExists("Mechanic"))
-            {
-                var role = new IdentityRole();
-                role.Name = "Mechanic";
-                roleManager.Create(role);
-            }
-
-            // creating Creating User role    
-            if (!roleManager.RoleExists("User"))
-            {
-                var role = new IdentityRole();
-                role.Name = "User";
-                roleManager.Create(role);
-            }
         }
     }
 }

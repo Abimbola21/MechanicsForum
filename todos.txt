@@ -1,8 +1,11 @@
 06/18/2018
 Add user to multiple roles
 do sthg if user is not found in edit function
+Add Validations to Email, phone number
 
-
+Every user with an account is a contributor but below applies
+User should not be logged in automatically at registration until they have confirmed their emails.
+User should be forced to change their password if admin creates account for them
 
 
 Everyone see the problem but only logged in users can contribute

@@ -11,18 +11,18 @@
     <div class="form-group">
         <label class="col-md-2 control-label" for="Email">Email </label>
         <div class="col-md-10">
-            <input type="text" name="Email" id="Email" required/>
+            <input type="text" name="Email" id="Email" required />
         </div>
     </div>
     <div class="form-group">
         <label class="col-md-2 control-label" for="Password">Password </label>
         <div class="col-md-10">
-            <input type="password" name="Password" id="Password" required/>
+            <input type="password" name="Password" id="Password" required />
         </div>
     </div>
 
     <div class="form-group">
-        <label class="col-md-2 control-label" for="Password">Confirm Password </label>
+        <label class="col-md-2 control-label" for="ConfirmPassword">Confirm Password </label>
         <div class="col-md-10">
             <input type="password" name="ConfirmPassword" id="ConfirmPassword" required />
         </div>
@@ -30,55 +30,135 @@
     <div class="form-group">
         <label class="col-md-2 control-label" for="Role">Role</label>
         <div class="col-md-10" id="Roles">
-
+            <select id="Role" name="selectRoles" hidden>
+                <option value="User" id="User">User</option>
+                <option value="Mechanic"  id="Mechanic">Mechanic</option>
+            </select>
+            <br /><br />
         </div>
     </div>
+    <br /><br /><br /><br />
 
-    <button id="submit">Submit</button>
-    <div id="x" style="color:red;"></div>
+    <div class="form-group">
+        <button id="submit" class="col-md-2">Submit</button>
+        <div id="x" style="color:red;"></div>
+    </div>
+    <br /><br /><br /><br />
+
+    @if (Request.IsAuthenticated && User.IsInRole("Admin") || User.IsInRole("SuperAdmin"))
+    {
+        <script>
+
+            //add event listener to body to populate my roles when it loads
+            var body = document.getElementById("mybody");
+            document.addEventListener("load", loadRoles());
+
+            function loadRoles() {
+
+                postData('/AspNetUsers/GetRoles')
+                    .then(function (response) {
+                        console.table(response);
+
+                        var roleList = document.getElementById("Roles");
+                        var chkdiv = document.createElement('div');
+                        chkdiv.setAttribute("class", "divStyle");
+                        //var label1 = document.createElement("Label");
+                        //label1.setAttribute("class", "col-md-2 control-label");
+                        //label1.setAttribute("for", "Role");
+                        //label1.innerHTML = "Role";
+                        //roleList.appendChild(label1);
+                        for (var i = 0; i < response.result.length; i++) {
+                            //for every role in the database, create a checkbox and assign attributes
+                            //to them. The idea is to allow administration assign multiple roles to user
+                            //that is being edited.
+                            //i included the if condition in order for the already assigned user role not to
+                            //show up in the list of checkboxes.
+                            var checkbox = document.createElement('input');
+                            checkbox.type = "checkbox";
+                            checkbox.name = "userRoles";
+                            checkbox.value = response.result[i].Name;
+                            checkbox.id = response.result[i].Name;
+                            //create labels for each checkbox to mark what each box is for
+                            var label = document.createElement('label')
+                            label.htmlFor = checkbox.id;
+                            label.appendChild(document.createTextNode(response.result[i].Name));
+
+                            chkdiv.appendChild(checkbox);
+                            chkdiv.appendChild(label);
+                            roleList.appendChild(chkdiv);
+
+                        }
+
+                    }).catch(error => console.error(error))
+            }//end get roles
 
 
+
+            function postData(url, data) {
+                // Default options are marked with *
+                return fetch(url, {
+                    body: JSON.stringify(data), // must match 'Content-Type' header
+                    cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+                    credentials: 'same-origin', // include, same-origin, *omit
+                    headers: {
+                        'user-agent': 'Mozilla/4.0 MDN Example',
+                        'content-type': 'application/json'
+                    },
+                    method: 'POST', // *GET, POST, PUT, DELETE, etc.
+                    mode: 'cors', // no-cors, cors, *same-origin
+                    redirect: 'follow', // manual, *follow, error
+                    referrer: 'no-referrer', // *client, no-referrer
+                })
+                    .then(response => response.json()) // parses response to JSON
+            }
+        </script>
+    }
+    else
+    {
+        //this script handles request for unauthenticated users
+        //it enables the select element so they can choose roles as Mechanic or User
+        <script>
+            //add event listener to body to populate my roles when it loads
+            var body = document.getElementById("mybody");
+            document.addEventListener("load", loadRoles());
+
+            function loadRoles() {
+                var select = document.getElementById("Role");
+                select.hidden = false;             
+            }
+        </script>
+    }
     <script>
-        //add event listener to body to populate my roles when it loads
-        var body = document.getElementById("mybody");
-        document.addEventListener("load", loadRoles());
-
-        function loadRoles() {
-            postData('/AspNetUsers/GetRoles')
-                .then(function (response) {
-                    console.table(response);
-
-                  var roleList = document.getElementById("Roles");
-                  var select = document.createElement("select");
-                  select.id = "RoleSelected";
-
-                    roleList.appendChild(select);
-
-                    for (var i = 0; i < response.result.length; i++) {
-                        var option = document.createElement("option");
-                        option.text = response.result[i].Name;
-                        option.value = response.result[i].Name;
-                        select.add(option);
-                        
-                    }
-                }).catch(error => console.error(error))
-        }
-
         var submit = document.getElementById("submit");
         if (submit) {
             submit.addEventListener("click", function () {
                 var data = new Object();
+                var listOfRoles = [];
                 var confirmPassword = document.getElementById("ConfirmPassword").value;
                 var password = document.getElementById("Password").value;
-               
+
                 data.UserName = document.getElementById("UserName").value;
                 data.Email = document.getElementById("Email").value;
-                if (password != confirmPassword)
-                {
+                if (password != confirmPassword) {
                     document.getElementById("x").innerHTML = "Passwords do not match";
                 }
-                data.Password = password; 
-                data.Roles = document.getElementById("RoleSelected").value;
+                data.Password = password;
+                var userRoles = document.getElementsByName("userRoles");
+                var selectRoles = document.getElementsByName("selectRoles");
+                if (userRoles.length != 0) {
+                    for (var i = 0; i < userRoles.length; i++) {
+                        if (userRoles[i].checked) {
+                            listOfRoles.push(userRoles[i].value);
+                        }
+                    }
+                    data.Roles = listOfRoles;
+                }
+                else {
+                    listOfRoles.push(selectRoles[0].value);
+                    data.Roles = listOfRoles;
+                }
+               
+                // data.Roles = document.getElementById("RoleSelected").value;
 
                 postData('/AspNetUsers/Create', data)
                     //  .then(data => console.table(data)) // JSON from `response.json()` call
@@ -93,11 +173,11 @@
                     document.getElementById("x").innerHTML = data.Errors;
                 }
                 else {
-                    window.location= "/Home";
+                    window.location = "/Home";
                 }
             }
         }
- 
+
 
         function postData(url, data) {
             // Default options are marked with *

@@ -23,12 +23,12 @@
     <div class="form-group">
         <label class="col-md-2 control-label" for="RoleSelected">Role</label>
         <div class="col-md-10" id="AddRole">
-            @*<input type="text" name="UserRole" id="UserRole" required />*@
+         
         </div>
     </div>
     <div class="form-group">
         <div class="col-md-10">
-            @*<input type="text" name="AddToRole" id="AddToRole" required />*@
+
         </div>
     </div>
     <br />  <br />
@@ -38,6 +38,7 @@
             <input type="submit" value="Save" class="btn btn-default" id="save" />
         </div>
     </div>
+    <div id="x" style="color:red;"></div>
 
     <div>
         @Html.ActionLink("Back to List", "Index")
@@ -60,47 +61,47 @@
                     document.getElementById("ID").value = response[0].Id;
                     document.getElementById("UserName").value = response[0].UserName;
                     document.getElementById("Email").value = response[0].Email;
-                    document.getElementById("PhoneNumber").value = response[0].PhoneNumber;
-                    //var userRole = document.getElementById("UserRole");
-                    //userRole.value = response[0].Role[0];
-                    var role = response[0].Role[0];
-
+                    var assignedRoles = [];
+                     assignedRoles = response[0].Role;
                     //load roles
                     postData('/AspNetUsers/GetRoles')
                         .then(function (response) {
                             console.table(response);
 
                             var roleList = document.getElementById("AddRole");
-                            //var select = document.createElement("select");
-                            //select.id = "RoleSelected";
-
-                            //roleList.appendChild(select);
-                
-                            for (var i = 0; i < response.result.length; i++) {
-                                //var option = document.createElement("option");
-                                //option.text = response.result[i].Name;
-                                //option.value = response.result[i].Name;
-                                //option.id = response.result[i].Name;
-                                //select.add(option);
-
+                            var chkdiv = document.createElement('div');
+                            chkdiv.setAttribute("class", "divStyle");
+                   
                                 //for every role in the database, create a checkbox and assign attributes
                                 //to them. The idea is to allow administration assign multiple roles to user
                                 //that is being edited.
                                 //i included the if condition in order for the already assigned user role not to
                                 //show up in the list of checkboxes.
-                                if (role != response.result[i].Name) {
+                            for (var i = 0; i < response.result.length; i++) {
+
+                                   // if (role != response.result[i].Name) {
                                     var checkbox = document.createElement('input');
                                     checkbox.type = "checkbox";
                                     checkbox.name = "Role";
                                     checkbox.value = response.result[i].Name;
                                     checkbox.id = response.result[i].Name;
+
+                            //check the roles that are already assigned to users and check the boxes
+                                for (var item = 0; item < assignedRoles.length;item++) {
+                                    if (assignedRoles[item] == response.result[i].Name) {
+                                    checkbox.checked = true;
+                                }
+                                }            
+                                   //create labels for each checkbox to mark what each box is for
                                     var label = document.createElement('label')
                                     label.htmlFor = checkbox.id;
                                     label.appendChild(document.createTextNode(response.result[i].Name));
 
-                                    roleList.appendChild(checkbox);
-                                    roleList.appendChild(label);
-                                }
+                                    
+                                    chkdiv.appendChild(checkbox);
+                                    chkdiv.appendChild(label);
+                                    roleList.appendChild(chkdiv);
+                              //  }
                             }
 
                         }).catch(error => console.error(error))
@@ -117,15 +118,14 @@
             data.Id = document.getElementById("ID").value;
             data.UserName = document.getElementById("UserName").value;
             data.Email = document.getElementById("Email").value;
-            data.PhoneNumber = document.getElementById("PhoneNumber").value;
             var userRoles = document.getElementsByName("Role");
-           
-            for (var i = 0; i < userRoles.length; i++) {        
-            if (userRoles[i].checked == true) {
-             listOfRoles.push(userRoles[i].value);
+
+            for (var i = 0; i < userRoles.length; i++) {
+                if (userRoles[i].checked == true) {
+                    listOfRoles.push(userRoles[i].value);
                 }
-            }          
-           data.Role = listOfRoles;
+            }
+            data.selectedRole = listOfRoles;
 
             postData('/AspNetUsers/Edit', data)
                 .then(data => handleError(data))
@@ -138,9 +138,9 @@
             if (data.Errors) {
                 document.getElementById("x").innerHTML = data.Errors;
             }
-            //else {
-            //    window.location = "/Home";
-            //}
+            else {
+                window.location = "/AspNetUsers";
+            }
         }//end handleError
 
         function postData(url, data) {

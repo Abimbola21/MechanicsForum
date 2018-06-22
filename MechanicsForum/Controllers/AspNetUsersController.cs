@@ -11,15 +11,26 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using MechanicsForum.Models;
 using System.Net.Mail;
+using System.Threading.Tasks;
 
 namespace MechanicsForum.Controllers
 {
+    //[Authorize(Roles = "SuperAdmin,Admin")]
     public class AspNetUsersController : Controller
     {
-        
+        public AspNetUsersController()
+        {
+        }
         private MechanicsForumEntities db = new MechanicsForumEntities();   
         private ApplicationUserManager _userManager;
         private ApplicationSignInManager _signInManager;
+        
+
+        public AspNetUsersController(ApplicationUserManager _userManager, ApplicationRoleManager roleManager)
+        {
+            UserManager = _userManager;
+            RoleManager = _roleManager;
+        }
 
         public ApplicationUserManager UserManager
         {
@@ -33,6 +44,18 @@ namespace MechanicsForum.Controllers
             }
         }
 
+        private ApplicationRoleManager _roleManager;
+        public ApplicationRoleManager RoleManager
+        {
+            get
+            {
+                return _roleManager ?? HttpContext.GetOwinContext().Get<ApplicationRoleManager>();
+            }
+            private set
+            {
+                _roleManager = value;
+            }
+        }
         public ApplicationSignInManager SignInManager
         {
             get
@@ -68,8 +91,10 @@ namespace MechanicsForum.Controllers
         }
 
         // GET: AspNetUsers/Create
-        public ActionResult Create()
+        //[Authorize(Roles = "SuperAdmin,Admin")]
+        public async Task<ActionResult> Create()
         {
+            ViewBag.RoleId = new SelectList(await RoleManager.Roles.ToListAsync(), "Name", "Name");
             return View();
         }
 
@@ -79,15 +104,15 @@ namespace MechanicsForum.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public JsonResult Create(string UserName, string Email, string Password, string Roles)
+        public JsonResult Create(string UserName, string Email, string Password, params string[] Roles)
         {
             var user = new ApplicationUser { UserName = UserName, Email = Email};
             //user.AccessFailedCount = 0;
             var result = UserManager.Create(user, Password);
-           
+           //Send message to user to confirm their email
             if (result.Succeeded)
             {
-                SignInManager.SignIn(user, isPersistent: false, rememberBrowser: false);
+               // SignInManager.SignIn(user, isPersistent: false, rememberBrowser: false);
 
                 // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
                 // Send an email with this link
@@ -106,8 +131,28 @@ namespace MechanicsForum.Controllers
                   smtp.Send(message);
                 }
 
-                //Assign Role here
-                UserManager.AddToRole(user.Id, Roles);
+                //Add User to the selected Roles. This block is only accessible to Administrator/Super 
+                //while creating users, they can add role
+             if (Roles != null)
+                    {
+                    result =  UserManager.AddToRoles(user.Id, Roles);
+
+                    if (!result.Succeeded)
+                        {
+                        return Json(new { result.Errors }, JsonRequestBehavior.AllowGet);
+                    }
+                    }
+             ////this block is for  a user other than super/administrator, they are assigned Reader roles at registration
+             //   else
+             //   {
+             //       result = UserManager.AddToRoles(user.Id, "Contributor");
+
+             //       if (!result.Succeeded)
+             //       {
+             //           return Json(new { result.Errors }, JsonRequestBehavior.AllowGet);
+             //       }
+             //   }
+                            
                 return Json(new { success = true }, JsonRequestBehavior.AllowGet);
 
             }
@@ -122,7 +167,7 @@ namespace MechanicsForum.Controllers
         {
             if (Request.IsAuthenticated)
             {
-                if (User.IsInRole("Admin"))
+                if (User.IsInRole("SuperAdmin") || User.IsInRole("Admin"))
                 {
                     var AllUsers = (from a in db.AspNetUsers
                                     select new
@@ -130,7 +175,6 @@ namespace MechanicsForum.Controllers
                                         a.Id,
                                         a.UserName,
                                         a.Email,
-                                        a.PhoneNumber,
                                         Role = a.AspNetRoles.Select(r => r.Name)
                                     });
                 return Json(new { result = AllUsers }, JsonRequestBehavior.AllowGet);
@@ -150,7 +194,7 @@ namespace MechanicsForum.Controllers
         {
             if (Request.IsAuthenticated)
             {
-                if (User.IsInRole("Admin"))
+                if (User.IsInRole("SuperAdmin"))
                 {
                     var names = (from a in db.AspNetRoles                               
                                  select new
@@ -162,7 +206,7 @@ namespace MechanicsForum.Controllers
                 else
                 {
                     var names = (from a in db.AspNetRoles
-                                 where a.Name != "Admin"
+                                 where a.Name != "SuperAdmin"
                                  select new
                                  {
                                      a.Name,
@@ -173,7 +217,7 @@ namespace MechanicsForum.Controllers
             else
             {
                 var names = (from a in db.AspNetRoles
-                             where a.Name != "Admin"
+                             where a.Name != "SuperAdmin"
                              select new
                              {
                                  a.Name,
@@ -200,7 +244,6 @@ namespace MechanicsForum.Controllers
                                     a.Id,
                                     a.UserName,
                                     a.Email,
-                                    a.PhoneNumber,
                                     Role = a.AspNetRoles.Select(r => r.Name)
                                 });
             return Json(selectedUser, JsonRequestBehavior.AllowGet);
@@ -211,40 +254,40 @@ namespace MechanicsForum.Controllers
         {
             return View();
         }
-    
 
-    //public ActionResult Create([Bind(Include = "Id,Email,EmailConfirmed,PasswordHash,SecurityStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEndDateUtc,LockoutEnabled,UserName")] AspNetUser aspNetUser)
-    //{
-    //    if (ModelState.IsValid)
-    //    {
-    //        aspNetUser.AccessFailedCount = 0;
-    //        db.AspNetUsers.Add(aspNetUser);
-    //        db.SaveChanges();
-    //        return RedirectToAction("Index");
-    //    }
 
-    //    return View(aspNetUser);
-    //}
+        //public ActionResult Create([Bind(Include = "Id,Email,EmailConfirmed,PasswordHash,SecurityStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEndDateUtc,LockoutEnabled,UserName")] AspNetUser aspNetUser)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        aspNetUser.AccessFailedCount = 0;
+        //        db.AspNetUsers.Add(aspNetUser);
+        //        db.SaveChanges();
+        //        return RedirectToAction("Index");
+        //    }
 
-    //// GET: AspNetUsers/Edit/5
-    //public ActionResult Edit(string id)
-    //{
-    //    if (id == null)
-    //    {
-    //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-    //    }
-    //    AspNetUser aspNetUser = db.AspNetUsers.Find(id);
-    //    if (aspNetUser == null)
-    //    {
-    //        return HttpNotFound();
-    //    }
-    //    return View(aspNetUser);
-    //}
+        //    return View(aspNetUser);
+        //}
 
-    // POST: AspNetUsers/Edit/5
-    // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-    // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-    [HttpPost]
+        //// GET: AspNetUsers/Edit/5
+        //public ActionResult Edit(string id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+        //    }
+        //    AspNetUser aspNetUser = db.AspNetUsers.Find(id);
+        //    if (aspNetUser == null)
+        //    {
+        //        return HttpNotFound();
+        //    }
+        //    return View(aspNetUser);
+        //}
+
+        // POST: AspNetUsers/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+
         //  [ValidateAntiForgeryToken]
         //public ActionResult Edit([Bind(Include = "Id,UserName,Email,PhoneNumber,Role")] AspNetUser aspNetUser)
         //{
@@ -261,28 +304,41 @@ namespace MechanicsForum.Controllers
         //    }
         //    return View(aspNetUser);
         //}
-
-        public JsonResult Edit (string Id, string UserName, string Email, string PhoneNumber,List<string> Role)
+        //Edit User Profile
+        // POST: AspNetUsers/Edit/
+        [HttpPost]
+        public JsonResult Edit (string Id, string UserName, string Email, string PhoneNumber,List<string> selectedRole)
         {
-            //var UserManager = new UserManager<ApplicationUser>(new )
-
+            //find the user to be edited
             var user = UserManager.FindById(Id);
-            //ApplicationUser user = UserManager.FindByEmail(Email);
-
             
             if(user == null)
             {
                 return Json(new { message = "User Not found" }, JsonRequestBehavior.AllowGet);
             }
+            //assign new values to user profile
             user.UserName = UserName;
             user.Email = Email;
             user.PhoneNumber = PhoneNumber;
-            foreach (var r in Role)
-            {
-                UserManager.AddToRole(user.Id, r);
-            }
+            //get current user roles
+            var userRoles = UserManager.GetRoles(user.Id);
 
-            var result = UserManager.Update(user);
+            selectedRole = selectedRole ?? new List<string> { };
+
+            //Add newly selected roles to users with the exception of the already assigned roles
+            var result = UserManager.AddToRoles(user.Id, selectedRole.Except(userRoles).ToArray<string>());
+            if (!result.Succeeded)
+            {
+                return Json(new { result.Errors }, JsonRequestBehavior.AllowGet);
+            }
+            //Also remove user roles if it is not included in the selected roles
+            result = UserManager.RemoveFromRoles(user.Id, userRoles.Except(selectedRole).ToArray<string>());
+            if (!result.Succeeded)
+            {
+                return Json(new { result.Errors }, JsonRequestBehavior.AllowGet);
+            }
+            //Update the user profile
+            result = UserManager.Update(user);
             if (result.Succeeded)
             {
                 
