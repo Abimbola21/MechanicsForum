@@ -4,30 +4,56 @@
 
 <div id="problem-header">
 
-</div>
-<div id="answers">
+</div> 
+<div id="problem-desc">
 
+</div>
+<br/>
+<div id="problem-info"  class="user-info">
+
+</div>
+<div id="comment" >
+    <textarea id="txtcomment" rows="5"; cols="50" hidden></textarea>
+</div>
+<hr />
+<div id="answers">
+    @if (Request.IsAuthenticated)
+    {
+        <div id="eachCommDiv"></div>
+    }
+    else
+    {
+        <div id="eachCommDiv" onclick="document.getElementById('btncomment').hidden = false; return false;"></div>
+    }
 </div>
 <div class="form-horizontal">
     <hr />
     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
     <form id="fileSelectForm" action="\Answers\SubmitAnswer" method="post" enctype="multipart/form-data">
-        <textarea name="AnswerDesc" placeholder="Answer here....." id="answer" class="answertxt" rows="10" cols="200"></textarea>
+        <textarea name="AnswerDesc" placeholder="Answer here....." id="answer" class="answertxt" rows="10" cols="1000" required></textarea>
         <label for="desc">Upload Media: </label>
         <div id="filediv">
             <input type="file" name="file1" id="file1" onchange="addFileSelection(this.name);" />
             <span id="x1" style="color:red" onclick="removeFileSelection(this);">X</span>
             <br id="br1" />
         </div>
-        <input type="hidden" name="Problem_Id" id="problemId"/>
-        <input type="submit" value="Submit" />
+        <input type="hidden" name="Problem_Id" id="problemId" />
+        <p style="color:brown" id="MustLogIn" hidden>You must be logged in to answer questions</p>
+        @if (!Request.IsAuthenticated)
+        {
+            <input type="submit" value="Submit" id="save" onclick="document.getElementById('MustLogIn').hidden = false; return false;" />
+        }
+        else
+        {
+            <input type="submit" value="Submit" id="save" />
+        }
+
     </form>
 
 </div>
 <p>
-    @* @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |*@
-    @Html.ActionLink("Back to List","Index","Problems")
+    @Html.ActionLink("Back to List", "Index", "Problems")
 </p>
 
 <script>
@@ -37,7 +63,7 @@
     function loadAnswers() {
         var loc = window.location.href;
         //the expression in the below log statement returns the string after the last / of the url
-        //which is stored in the above variable loc. 
+        //which is stored in the above variable loc.
         console.log(loc.substring(loc.lastIndexOf('/') + 1, loc.length));
 
         //I created an hidden input element in the form above and assign to it the string after the last / of the url
@@ -45,20 +71,51 @@
         var problemId = document.getElementById("problemId");
         problemId.value = loc.substring(loc.lastIndexOf('/') + 1, loc.length);
 
-        //the function below calls the method GetProblemAnswers in the Answers controller with the id of 
+        //the function below calls the method GetProblemAnswers in the Answers controller with the id of
         //the problem in question and return all the answers that have been provided to this question
         postData('/Answers/GetProblemAnswers?id=' + loc.substring(loc.lastIndexOf('/') + 1, loc.length))
             .then(function (response) {
                 console.table(response);
 
-                //get div of the problem and display the question
+                //get div of the problem and display the summary
                 var problemDiv = document.getElementById("problem-header");
                 problemDiv.setAttribute("class", "grid");
                 problemDiv.innerHTML = response.result[0].Summary;
 
+                //get div of the problem and display the description
+                var pDescDiv = document.getElementById("problem-desc");
+                pDescDiv.setAttribute("class", "grid");
+                pDescDiv.innerHTML = response.result[0].Description;
+
+                //get div of the problem and display the description
+                var pInfoDiv = document.getElementById("problem-info");
+                pInfoDiv.setAttribute("class", "grid");
+                pInfoDiv.innerHTML = "posted  " + response.result[0].UserId + "<br/>" + new Date(response.result[0].PostDate.match(/\d+/)[0] * 1) + "<br/>";
+
+                //create a button to add comment
+                var addcomment = document.createElement("button");
+                addcomment.innerHTML = "Add comment";
+                addcomment.setAttribute("class", "btn btn-light");
+                //append the button to the comment div
+                var pComment = document.getElementById("comment");
+                pComment.appendChild(addcomment);
+                pComment.appendChild(document.createElement("br"));
+                pComment.appendChild(document.createElement("br"));
+                // once comment button is clicked, unhide text area
+                var txtComment = document.createElement("textarea")
+                txtComment.setAttribute("rows", "5");
+                txtComment.setAttribute("cols", "100");
+
+                addcomment.addEventListener("click", function () {
+                    pComment.appendChild(txtComment);
+
+                });
+
+
                 //loop through answers to the above question and display
                 for (var i = 0; i < response.result.length; i++) {
                     var answerDiv = document.getElementById("answers");
+                    var eachCommDiv = document.getElementById("eachCommDiv");
 
                     var divDesc = document.createElement("div");
                     divDesc.setAttribute("class", "post-text");
@@ -72,28 +129,52 @@
                     var userInfo = document.createElement("div");
                     userInfo.setAttribute("class", "user-info");
 
+                    //div for add comment
+                    //create a div and button to add comment
+                    var commentdiv = document.createElement("div");
+                    var btncomment = document.createElement("button");
+                    btncomment.innerHTML = "Add comment";
+                    btncomment.setAttribute("class", "btn btn-light");
+                    commentdiv.appendChild(btncomment);
+                    commentdiv.appendChild(document.createElement("br"));
+                    commentdiv.appendChild(document.createElement("br"));
+                    //once comment button is clicked, create text area
+                    var txtComment2 = document.createElement("textarea")
+                    txtComment2.setAttribute("rows", "5");
+                    txtComment2.setAttribute("cols", "100");
+                    txtComment2.setAttribute("hidden", "true");
+                    commentdiv.appendChild(txtComment2);
+                    btncomment.addEventListener("click", function () {
+                 
+                        txtComment2.hidden = false;
+                    });
+
+
                     //inner divs in user info div
                     //div for username of the person answering
                     var divBy = document.createElement("div");
                     divBy.setAttribute("class", "user-action-time");
                     //div for date of answer
                     var divAnswerDate = document.createElement("div");
+                    divAnswerDate.setAttribute("class", "user-action-time");
                     if (response.result[i].AnsweredBy != null) {
-                        divBy.innerHTML = "answered by " + response.result[i].AnsweredBy;                                        
+                        divBy.innerHTML = "answer by " + response.result[i].AnsweredBy;
                         divAnswerDate.innerHTML = new Date(response.result[i].AnswerDate.match(/\d+/)[0] * 1);
                     }
                     var hr = document.createElement("hr");
 
-                    answerDiv.appendChild(divDesc);
-                    answerDiv.appendChild(userInfo);
+                   eachAnsDiv.appendChild(divDesc);
+                   eachAnsDiv.appendChild(userInfo);         
+                   eachAnsDiv.appendChild(commentdiv); 
+                   
                     userInfo.appendChild(divBy);
                     userInfo.appendChild(divAnswerDate);
-                    answerDiv.appendChild(hr);
+                    eachAnsDiv.appendChild(hr);
                 }
 
             }).catch(error => console.error(error))
     }
-       //end load answers
+    //end load answers
 
 
     function postData(url, data) {

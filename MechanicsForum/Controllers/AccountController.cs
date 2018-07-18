@@ -76,36 +76,48 @@ namespace MechanicsForum.Controllers
                 return View(model);
             }
 
+            ApplicationUser user = await UserManager.FindAsync(model.UserName, model.Password);
+            //if Email is not confirmed, user cannot login to the system
+            if (user != null)
+            {
+                if (user.EmailConfirmed == false)
+                {
+                    ModelState.AddModelError("", "Email not confirmed.");
+                    return View(model);
+                }
+            }
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, change to shouldLockout: true
             var result = await SignInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, shouldLockout: false);
             switch (result)
             {
                 case SignInStatus.Success:
-                    ApplicationUser user = await UserManager.FindAsync(model.UserName, model.Password);
+                  
                     // Redirect to User landing page on SignIn, according to Role
-                    if ((UserManager.IsInRole(user.Id, "User")))
-                    {
-                        return RedirectToAction("Index", "Problems");
-                    }
-                    if ((UserManager.IsInRole(user.Id, "Mechanic")))
-                    {
-                        return RedirectToAction("Index", "Problems");
-                    }
-                    if ((UserManager.IsInRole(user.Id, "SuperAdmin")))
-                    {
-                        return RedirectToAction("Index", "AspNetRoles");
-                    }
-                    if ((UserManager.IsInRole(user.Id, "Admin")))
-                    {
-                      return RedirectToAction("Index", "AspNetUsers");
-                    }
+
+                        if ((UserManager.IsInRole(user.Id, "User")))
+                        {
+                            return RedirectToAction("Index", "Problems");
+                        }
+                        if ((UserManager.IsInRole(user.Id, "Mechanic")))
+                        {
+                            return RedirectToAction("Index", "Problems");
+                        }
+                        if ((UserManager.IsInRole(user.Id, "SuperAdmin")))
+                        {
+                            return RedirectToAction("Index", "AspNetRoles");
+                        }
+                        if ((UserManager.IsInRole(user.Id, "Admin")))
+                        {
+                            return RedirectToAction("Index", "AspNetUsers");
+                        }                    
                     return View(model);
+          
                 // return RedirectToLocal(returnUrl);
                 case SignInStatus.LockedOut:
                     return View("Lockout");
                 case SignInStatus.RequiresVerification:
-                    return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
+                    return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, model.RememberMe });
                 case SignInStatus.Failure:
                 default:
                     ModelState.AddModelError("", "Invalid login attempt.");
@@ -395,7 +407,8 @@ namespace MechanicsForum.Controllers
                     // If the user does not have an account, then prompt the user to create an account
                     ViewBag.ReturnUrl = returnUrl;
                     ViewBag.LoginProvider = loginInfo.Login.LoginProvider;
-                    ViewData["UserRoles"] = new SelectList(context.Roles.Where(u => !u.Name.Contains("Admin")).ToList(), "Name", "Name");
+                    // ViewData["UserRoles"] = new SelectList(context.Roles.Where(u => !u.Name.Contains("Admin")).ToList(), "Name", "Name");
+                    ViewData["UserRoles"] = new SelectList(context.Roles.Where(u => u.Name.Contains("User") || u.Name.Contains("Mechanic")).ToList(), "Name", "Name");
                     return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { Email = loginInfo.Email });
             }
         }

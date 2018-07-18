@@ -236,6 +236,9 @@
     <Compile Include="Models\Answer.cs">
       <DependentUpon>User.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\AnswersMedia.cs">
+      <DependentUpon>User.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\AspNetRole.cs">
       <DependentUpon>User.tt</DependentUpon>
     </Compile>
@@ -251,6 +254,9 @@
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Problem.cs">
+      <DependentUpon>User.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ProblemsMedia.cs">
       <DependentUpon>User.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Role.cs" />
@@ -311,6 +317,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\populateQuestions.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Web.config">
@@ -370,9 +377,11 @@
     <Content Include="Views\AspNetRoles\Details.cshtml" />
     <Content Include="Views\AspNetRoles\Edit.cshtml" />
     <Content Include="Views\AspNetRoles\Index.cshtml" />
+    <Content Include="Views\Problems\Search.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Content\images\" />
     <Folder Include="Migrations\" />
     <Folder Include="uploads\" />
   </ItemGroup>

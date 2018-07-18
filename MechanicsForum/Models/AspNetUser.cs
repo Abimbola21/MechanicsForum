@@ -11,8 +11,7 @@ namespace MechanicsForum.Models
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-
+    
     public partial class AspNetUser
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -25,16 +24,13 @@ namespace MechanicsForum.Models
     
         public string Id { get; set; }
         public string Email { get; set; }
-        [Display(Name = "Email Confirmed")]
         public bool EmailConfirmed { get; set; }
         public string PasswordHash { get; set; }
         public string SecurityStamp { get; set; }
         public string PhoneNumber { get; set; }
         public bool PhoneNumberConfirmed { get; set; }
         public bool TwoFactorEnabled { get; set; }
-        [Display(Name = "Lockout EndDate")]
         public Nullable<System.DateTime> LockoutEndDateUtc { get; set; }
-        [Display(Name = "Lockout Enabled")]
         public bool LockoutEnabled { get; set; }
         public int AccessFailedCount { get; set; }
         public string UserName { get; set; }

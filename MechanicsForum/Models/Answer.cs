@@ -14,6 +14,12 @@ namespace MechanicsForum.Models
     
     public partial class Answer
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Answer()
+        {
+            this.AnswersMedias = new HashSet<AnswersMedia>();
+        }
+    
         public int Id { get; set; }
         public string AnswerDesc { get; set; }
         public string AnsweredBy { get; set; }
@@ -24,5 +30,7 @@ namespace MechanicsForum.Models
         public Nullable<int> CountModified { get; set; }
     
         public virtual Problem Problem { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<AnswersMedia> AnswersMedias { get; set; }
     }
 }

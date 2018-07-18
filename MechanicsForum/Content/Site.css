@@ -22,9 +22,13 @@ textarea {
     max-width: 280px;
 }
 
-#tbldiv {
+/*#tbldiv {
     overflow: auto;
     margin-bottom: 30px;
+}*/
+
+#tbldiv{
+    background-color:white;
 }
 
 #problem-header {
@@ -65,11 +69,14 @@ textarea {
     color: #6a737c;
 }
     .user-info .user-action-time {
-    margin-top: 1px;
-    margin-bottom: 4px;
-    font-size: 12px;
-    white-space: nowrap;
-}
+        margin-top: 1px;
+        margin-bottom: 4px;
+        font-size: 14px;
+        white-space: nowrap;
+        color: dodgerblue;
+        position: relative;
+        left: 700px;
+    }
 .user-info .user-gravatar32 + .user-details {
     margin-left: 8px;
     width: calc(100% - 40px);
@@ -124,21 +131,58 @@ textarea {
     padding: 3px 1.8%;
     width: 6%;
 }
-            .rTable:after {
-            visibility: hidden;
-            display: block;
-            font-size: 0;
-            content: " ";
-            clear: both;
-            height: 0;
-        }
+    .rTable:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
+}
 
          .divStyle label { margin-right:20px; padding-left: 10px;}
 /*.divStyle checkbox {
     border: 1px solid red;
     margin-right: 20px
 }*/
-
+.footer-section {
+    margin: 0 !important;
+    bottom: 0;
+    margin-bottom: 0;
+    border-radius: 0;
+    /*position: absolute;*/
+    right: 0;
+    left: 0;
+    border-width: 0 0 1px;
+    z-index: 1000;
+    min-height: 50px;
+    border: 1px solid transparent;
+    background-color: #1D1D1D;
+    border-color: #363636;
+    text-align: left;
+    color: #ffffff;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.dexp-section {
+    padding: 0 !important;
+}
+#section-footer {
+    overflow: auto;
+    border-top: 1px #363636 solid;
+    background: #1D1D1D;
+    padding: 15px 0;
+}
+ #section-footer .region-copyright p {
+        padding-top: 10px;
+        padding-bottom: 10px;
+        white-space: nowrap;
+        font-size: 18px;
+        margin: 0;
+    }
+    #section-footer .block {
+        text-align: center;
+    }
 @media (min-width:979px) {
     ul .nav li.dropdown:hover > div.dropdown-menu {
         display: block;

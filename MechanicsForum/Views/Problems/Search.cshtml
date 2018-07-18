@@ -1,46 +1,43 @@
-﻿@model IEnumerable<MechanicsForum.Models.Problem>
+﻿@model string
 
 @{
     ViewBag.Title = "Posts";
 }
-
 <style type="text/css">
     .bgimg {
         background: url('../Content/images/Mech.jpg');
-        height:400px;
-        width:1140px;
-
+        max-width: 100%;
     }
-    /*body {
+
+    body {
         font-family: Arial,"Helvetica Neue",Helvetica,sans-serif;
         font-size: 20px;
-        background-color:gainsboro;
-    }*/
+        background-color: gainsboro;
+    }
 
     .txtColor {
         color: #ffffff;
     }
 </style>
 
-<div class="jumbotron bgimg img-responsive">
- <p></p>
-    <p></p>
-</div>
+@*<div class="jumbotron bgimg img-responsive">
+        <h1 style="color:white">The Mechanics Forum</h1>
+        <p class="lead txtColor">For your automobile related questions</p>
+    </div>*@
 
 @{
     ViewData["Title"] = "Home Page";
 }
+<h2>You searched for @Model</h2>
+<div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="6000">
 
-@*<div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="6000">
-   
     <div class="carousel-inner" role="listbox">
         <div class="item active">
             <img src="../Content/images/Mech.jpg" alt="ASP.NET" class="img-responsive" />
         </div>
 
     </div>
-</div>*@
-
+</div>
 
 <h2>Questions</h2>
 
@@ -62,16 +59,14 @@
 
 </div>
 
-
 <script>
     window.addEventListener("load", function () {
-
-        postData('/Problems/GetAllProblems')
+                postData('/Problems/GetAllProblems/@Model')
             .then(function (response) {
                 console.table(response);
                 populateQns(response);
-                })
-       
+            })
+
     });
 
 

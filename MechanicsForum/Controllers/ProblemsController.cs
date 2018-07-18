@@ -9,6 +9,7 @@ using System.Web;
 using System.Web.Mvc;
 using MechanicsForum.Models;
 using Microsoft.AspNet.Identity;
+using System.Data.SqlClient;
 
 namespace MechanicsForum.Controllers
 {
@@ -29,24 +30,86 @@ namespace MechanicsForum.Controllers
             return View();
         }
 
-        //This returns a list of all problems
-        public JsonResult GetAllProblems()
+        public ActionResult Search()
         {
-            var AllProblems = (from a in db.Problems
-                               select new
-                               {
-                                   a.Id,
-                                   a.UserId,
-                                   a.Description,
-                                   a.Summary,
-                                   a.Status,
-                                   a.MediaPath,
-                                   a.ModifiedDate,
-                                   a.PostDate,
-                                   a.ClosedBy,
-                                   a.DateClosed,
-                                   latestAnswerBy = a.Answers.Select(r => r.AnsweredBy)
-                               });
+            string S = Request["search"];
+            if(S == null)
+            {
+                S = "";
+            }
+            return View((Object)S);
+        }
+
+        //This returns a list of all problems
+        public JsonResult GetAllProblems(string id)
+        {
+            //var AllProblems = (from a in db.Problems.AsEnumerable()
+            //                   orderby a.PostDate descending
+            //                   select new
+            //                     {
+            //                         a.Id,
+            //                         a.UserId,
+            //                         a.Description,
+            //                         a.Summary,
+            //                         a.Status,
+            //                         ModifiedDate = a.ModifiedDate.GetValueOrDefault().ToString("MM/dd/yyyy HH:ss"),
+            //                         PostDate = a.PostDate.GetValueOrDefault().ToString("MM/dd/yyyy HH:ss"),
+            //                         a.ClosedBy,
+            //                         DateClosed = a.DateClosed.GetValueOrDefault().ToString("MM/dd/yyyy HH:ss"),
+            //                         latestAnswerBy = a.Answers.Select(r => r.AnsweredBy)
+            //                     }).ToList();
+
+            var AllProblems = (from a in db.Problems.AsEnumerable()
+                         join b in db.Answers on a.Id equals b.Problem_Id into ProblemAnswer
+                         from r in ProblemAnswer.Where(x => x.Problem_Id != 0)
+                         orderby a.PostDate descending
+                         group new
+                         {
+                             a.Id,
+                             a.UserId,
+                             a.Description,
+                             a.Summary,
+                             a.Status,
+                             ModifiedDate = a.ModifiedDate.GetValueOrDefault().ToString("MM/dd/yyyy HH:ss"),
+                             PostDate = a.PostDate.GetValueOrDefault().ToString("MM/dd/yyyy HH:ss"),
+                             a.ClosedBy,
+                             DateClosed = a.DateClosed.GetValueOrDefault().ToString("MM/dd/yyyy HH:ss"),
+                             latestAnswerBy = a.Answers.Select(r => r.AnsweredBy)
+                         }
+                         by new { a.Id }
+                               into g
+                         select new
+                         {
+                             g,
+                             count = g.Count()
+                         }).ToList();
+
+            if (id != null)
+            {
+                //var t = (from a in AllProblems
+                //               where a.Summary.Contains(id) || a.Description.Contains(id)
+                //               orderby a.PostDate descending
+                //               select new
+                //               {
+                //                   a.Id,
+                //                   a.UserId,
+                //                   a.Description,
+                //                   a.Summary,
+                //                   a.Status,
+                //                   a.ModifiedDate,
+                //                   a.PostDate,
+                //                   a.ClosedBy,
+                //                   a.DateClosed,
+                //                   a.latestAnswerBy
+                //               });
+                //var t = (from s in AllProblems
+                //         where s.g.Contains(t=>t
+                //)
+
+                return Json(new { result = t }, JsonRequestBehavior.AllowGet);
+
+            }
+            
             if (AllProblems != null)
             { 
                     return Json(new { result = AllProblems }, JsonRequestBehavior.AllowGet);               
@@ -58,6 +121,24 @@ namespace MechanicsForum.Controllers
         }
         //end All Problem
 
+           //This returns a key value pair of each problem and its number of answers
+        public JsonResult CountAnsweredProblems()
+        {
+            var count = from a in db.Answers
+                        group new
+                        {
+                            a.Problem_Id
+                        }
+                        by new { a.Problem_Id }
+                         into g
+                        select new
+                        {
+                          g.Key,
+                          count=g.Count()
+                        };
+
+            return Json(new { result = count }, JsonRequestBehavior.AllowGet);
+        }
         // GET: Problems/Details/5
         public ActionResult Details(int? id)
         {
@@ -115,7 +196,8 @@ namespace MechanicsForum.Controllers
         public ActionResult Create([Bind(Include = "Summary,Description,Media Path")] Problem problem)
         { 
             var result = new List<string>();
-           // Problem problem = new Problem();
+            var paths = new List<string>();
+            ProblemsMedia media = new ProblemsMedia();
             var path = "";
 
             foreach (string file in Request.Files)
@@ -167,10 +249,9 @@ namespace MechanicsForum.Controllers
                     }
                     Request.Files[file].SaveAs(path);
                     result.Add(filename);
+                    paths.Add(path);
                 }
             }
-            problem.MediaPath = path;
-           // problem.Description = Description;
             problem.Status = "posted"; 
             problem.UserId = User.Identity.GetUserName();
             problem.PostDate = DateTime.Now;
@@ -180,19 +261,14 @@ namespace MechanicsForum.Controllers
             {
              db.Problems.Add(problem);
              db.SaveChanges();
+             media.ProblemID = problem.Id;  
+                foreach(var mPath in paths)
+                {
+                    media.MediaPath = mPath;
+                    db.ProblemsMedia.Add(media);
+                    db.SaveChanges();
+                }
              }
-
-            //var result = Json(new { result = "Sucess" });
-            //var jsonResult = (from f in result
-            //                  select
-            //                  new
-            //                  {
-            //                      file = f,
-            //                      Description,
-                                  
-            //                  });
-
-            //return Json(jsonResult, JsonRequestBehavior.AllowGet);
             return RedirectToAction("Index");
         }
 

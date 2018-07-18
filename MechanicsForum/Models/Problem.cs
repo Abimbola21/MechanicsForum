@@ -18,12 +18,12 @@ namespace MechanicsForum.Models
         public Problem()
         {
             this.Answers = new HashSet<Answer>();
+            this.ProblemsMedia = new HashSet<ProblemsMedia>();
         }
     
         public int Id { get; set; }
         public string Description { get; set; }
         public string UserId { get; set; }
-        public string MediaPath { get; set; }
         public string location { get; set; }
         public string Status { get; set; }
         public string Comment { get; set; }
@@ -36,5 +36,7 @@ namespace MechanicsForum.Models
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Answer> Answers { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ProblemsMedia> ProblemsMedia { get; set; }
     }
 }

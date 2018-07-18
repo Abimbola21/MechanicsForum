@@ -1,0 +1,123 @@
+iayat123
+John15:16
+
+superAdmin
+
+
+how to categorize posts by the key words 
+
+and return only the posts related to the role
+how to determine which role goes to which mechanic
+
+
+limit size of media post
+
+add comment
+add answer
+
+no of views on problem
+no of answers
+
+
+<div class="input-group">
+   <input type="text" class="form-control">
+   <span class="input-group-btn">
+        <button class="btn btn-default" type="button">Go!</button>
+   </span>
+</div>
+
+
+
+ public JsonResult GetAllProblems(string id)
+        {
+              var AllProblems = (from a in db.Problems.AsEnumerable()
+                                 orderby a.PostDate descending
+                                 select new
+                                   {
+                                       a.Id,
+                                       a.UserId,
+                                       a.Description,
+                                       a.Summary,
+                                       a.Status,
+                                       ModifiedDate = a.ModifiedDate.GetValueOrDefault().ToString("MM/dd/yyyy HH:ss"),
+                                       PostDate = a.PostDate.GetValueOrDefault().ToString("MM/dd/yyyy HH:ss"),
+                                       a.ClosedBy,
+                                       DateClosed = a.DateClosed.GetValueOrDefault().ToString("MM/dd/yyyy HH:ss"),
+                                       latestAnswerBy = a.Answers.Select(r => r.AnsweredBy)
+                                   }).ToList();
+            if(id != null)
+            {
+                var t = (from a in AllProblems
+                               where a.Summary.Contains(id) || a.Description.Contains(id)
+                               orderby a.PostDate descending
+                               select new
+                               {
+                                   a.Id,
+                                   a.UserId,
+                                   a.Description,
+                                   a.Summary,
+                                   a.Status,
+                                   a.ModifiedDate,
+                                   a.PostDate,
+                                   a.ClosedBy,
+                                   a.DateClosed,
+                                   a.latestAnswerBy
+                               });
+
+                return Json(new { result = t }, JsonRequestBehavior.AllowGet);
+
+            }
+            
+            if (AllProblems != null)
+            { 
+                    return Json(new { result = AllProblems }, JsonRequestBehavior.AllowGet);               
+            }
+            else
+            {
+                return Json(new { success = false }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+
+  public JsonResult CountAnsweredProblems()
+        {
+            //var count = from a in db.Answers
+            //            group new
+            //            {
+            //                a.Problem_Id
+            //            }
+            //            by new { a.Problem_Id }
+            //             into g
+            //            select new
+            //            {
+            //              g.Key,
+            //              count=g.Count()
+            //            };
+            var count = (from a in db.Problems.AsEnumerable()
+                         join b in db.Answers on a.Id equals b.Problem_Id into ProblemAnswer
+                         from r in ProblemAnswer.Where(x => x.Problem_Id != 0)
+                         orderby a.PostDate descending
+                         group new
+                         {
+                             a.Id,
+                             a.UserId,
+                             a.Description,
+                             a.Summary,
+                             a.Status,
+                             ModifiedDate = a.ModifiedDate.GetValueOrDefault().ToString("MM/dd/yyyy HH:ss"),
+                             PostDate = a.PostDate.GetValueOrDefault().ToString("MM/dd/yyyy HH:ss"),
+                             a.ClosedBy,
+                             DateClosed = a.DateClosed.GetValueOrDefault().ToString("MM/dd/yyyy HH:ss"),
+                             latestAnswerBy = a.Answers.Select(r => r.AnsweredBy)
+                         }
+                         by new { a.Id }
+                               into g
+                         select new
+                         {   g,
+                             count = g.Count()
+                         }).ToList();
+
+            return Json(new { result = count }, JsonRequestBehavior.AllowGet);
+        }
+
+

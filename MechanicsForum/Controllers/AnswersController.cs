@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -47,7 +48,7 @@ namespace MechanicsForum.Controllers
                                {
                                    a.AnswerDesc,
                                    a.AnsweredBy,
-                                   a.AnswerDate,
+                                   AnswerDate = (a.AnswerDate !=null)?((DateTime) a.AnswerDate) : a.AnswerDate,
                                    a.MediaPath,
                                    a.Problem_Id
                                });
@@ -59,22 +60,27 @@ namespace MechanicsForum.Controllers
                                 {
                                     b.Id,
                                     b.Summary,
-                                    b.Description
-                                });
+                                    b.Description,
+                                    b.UserId,
+                                    PostDate = (b.PostDate != null) ? ((DateTime)b.PostDate) : b.PostDate
+                                 });
 
             //both queries from above are joined in one query
             var join = (from p in fromProblems
                         join q in fromAnswers on p.Id equals q.Problem_Id into ProblemAnswer
                         from r in ProblemAnswer.DefaultIfEmpty()
-                           select new
-                           {
-                               r.AnswerDesc,
-                               r.AnsweredBy,
-                               r.AnswerDate,
-                               r.MediaPath,
-                               p.Summary,
-                               p.Description
-                           });
+                        select new
+                        {
+                            r.AnswerDesc,
+                            r.AnsweredBy,
+                            r.AnswerDate,
+                            r.MediaPath,
+                            p.Summary,
+                            p.Description,
+                            p.UserId,
+                            p.PostDate
+
+                        });
             if (join != null)
             {
                 return Json(new { result = join }, JsonRequestBehavior.AllowGet);
@@ -90,6 +96,8 @@ namespace MechanicsForum.Controllers
         {
             var result = new List<string>();
             var path = "";
+            AnswersMedia media = new AnswersMedia();
+            var paths = new List<string>();
 
             foreach (string file in Request.Files)
             {
@@ -140,22 +148,30 @@ namespace MechanicsForum.Controllers
                     }
                     Request.Files[file].SaveAs(path);
                     result.Add(filename);
+                    paths.Add(path);
                 }
             }
-            answer.MediaPath = path;
             answer.AnsweredBy = User.Identity.GetUserName();
             answer.AnswerDate = DateTime.Now;
             if (ModelState.IsValid)
             {
                 db.Answers.Add(answer);
                 db.SaveChanges();
+                media.AnswerID = answer.Id;
+                foreach (var mPath in paths)
+                {
+                    media.MediaPath = mPath;
+                    db.AnswersMedia.Add(media);
+                    db.SaveChanges();
+                }
             }
 
             return RedirectToAction("Details/"+answer.Problem_Id);
         }
 
-        // GET: Answer/Create
-        public ActionResult Create()
+
+// GET: Answer/Create
+public ActionResult Create()
         {
             return View();
         }

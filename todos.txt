@@ -15,8 +15,10 @@ consider other statuses like closed and closed date by other like solved by, clo
 
 
 
+Revert to Choosing category at login
 
 
+show problem description in answer details page
 
 
 
