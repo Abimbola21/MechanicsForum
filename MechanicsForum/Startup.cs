@@ -25,13 +25,16 @@ namespace MechanicsForum
             if (!roleManager.RoleExists("SuperAdmin"))
             {
                 // first we create Super Admin role   
-                var role = new IdentityRole();
-                role.Name = "SuperAdmin";
+                var role = new IdentityRole
+                {
+                    Name = "SuperAdmin"
+                };
                 roleManager.Create(role);
 
                 //Here we create a Admin super user who will maintain the website                  
 
-                var user = new ApplicationUser();
+                ApplicationUser appUser = new ApplicationUser();
+                var user = appUser;
                 user.UserName = "superAdmin";
                 user.Email = "victoria_lasode@yahoo.co.uk";
                 string userPWD = "Admin@01";

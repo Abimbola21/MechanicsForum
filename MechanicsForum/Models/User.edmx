@@ -5,6 +5,16 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="MechanicsForumModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="__MigrationHistory">
+          <Key>
+            <PropertyRef Name="MigrationId" />
+            <PropertyRef Name="ContextKey" />
+          </Key>
+          <Property Name="MigrationId" Type="nvarchar" MaxLength="150" Nullable="false" />
+          <Property Name="ContextKey" Type="nvarchar" MaxLength="300" Nullable="false" />
+          <Property Name="Model" Type="varbinary(max)" Nullable="false" />
+          <Property Name="ProductVersion" Type="nvarchar" MaxLength="32" Nullable="false" />
+        </EntityType>
         <EntityType Name="Answers">
           <Key>
             <PropertyRef Name="Id" />
@@ -18,12 +28,9 @@
           <Property Name="Problem_Id" Type="int" Nullable="false" />
           <Property Name="CountModified" Type="int" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'MechanicsForum.dbo.AnswersMedia' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="AnswersMedia">
           <Key>
             <PropertyRef Name="Id" />
-            <PropertyRef Name="AnswerID" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="AnswerID" Type="int" Nullable="false" />
@@ -87,15 +94,15 @@ warning 6002: The table/view 'MechanicsForum.dbo.AnswersMedia' does not have a p
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Description" Type="nvarchar(max)" />
           <Property Name="UserId" Type="nvarchar(max)" />
-          <Property Name="location" Type="nvarchar(max)" />
           <Property Name="Status" Type="nvarchar(max)" />
-          <Property Name="Comment" Type="nvarchar(max)" />
           <Property Name="PostDate" Type="datetime" />
           <Property Name="ModifiedDate" Type="datetime" />
           <Property Name="DateClosed" Type="datetime" />
           <Property Name="SolvedBy" Type="nvarchar(max)" />
           <Property Name="ClosedBy" Type="nvarchar(max)" />
           <Property Name="Summary" Type="nvarchar" MaxLength="50" />
+          <Property Name="VotesUp" Type="bigint" />
+          <Property Name="VotesDown" Type="bigint" />
         </EntityType>
         <EntityType Name="ProblemsMedia">
           <Key>
@@ -104,6 +111,32 @@ warning 6002: The table/view 'MechanicsForum.dbo.AnswersMedia' does not have a p
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ProblemID" Type="int" Nullable="false" />
           <Property Name="MediaPath" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
+        <EntityType Name="VotesUserAnswers">
+          <Key>
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="AnswerId" />
+          </Key>
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="AnswerId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="VotesUserProblem">
+          <Key>
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="ProblemId" />
+          </Key>
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="ProblemId" Type="int" Nullable="false" />
         </EntityType>
         <Association Name="FK__Answers__Problem__06CD04F7">
           <End Role="Problems" Type="Self.Problems" Multiplicity="1" />
@@ -138,6 +171,54 @@ warning 6002: The table/view 'MechanicsForum.dbo.AnswersMedia' does not have a p
             </Principal>
             <Dependent Role="ProblemsMedia">
               <PropertyRef Name="ProblemID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__VotesUser__Answe__3B40CD36">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
+          <End Role="VotesUserAnswers" Type="Self.VotesUserAnswers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="VotesUserAnswers">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__VotesUser__Answe__3C34F16F">
+          <End Role="Answers" Type="Self.Answers" Multiplicity="1" />
+          <End Role="VotesUserAnswers" Type="Self.VotesUserAnswers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Answers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="VotesUserAnswers">
+              <PropertyRef Name="AnswerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__VotesUser__Probl__3864608B">
+          <End Role="Problems" Type="Self.Problems" Multiplicity="1" />
+          <End Role="VotesUserProblem" Type="Self.VotesUserProblem" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Problems">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="VotesUserProblem">
+              <PropertyRef Name="ProblemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__VotesUser__UserI__37703C52">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
+          <End Role="VotesUserProblem" Type="Self.VotesUserProblem" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="VotesUserProblem">
+              <PropertyRef Name="UserId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -198,7 +279,9 @@ warning 6002: The table/view 'MechanicsForum.dbo.AnswersMedia' does not have a p
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="MechanicsForumModelStoreContainer">
+          <EntitySet Name="__MigrationHistory" EntityType="Self.__MigrationHistory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Answers" EntityType="Self.Answers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AnswersMedia" EntityType="Self.AnswersMedia" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRoles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetUserClaims" EntityType="Self.AspNetUserClaims" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetUserLogins" EntityType="Self.AspNetUserLogins" Schema="dbo" store:Type="Tables" />
@@ -206,13 +289,9 @@ warning 6002: The table/view 'MechanicsForum.dbo.AnswersMedia' does not have a p
           <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUsers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Problems" EntityType="Self.Problems" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProblemsMedia" EntityType="Self.ProblemsMedia" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="AnswersMedia" EntityType="Self.AnswersMedia" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [AnswersMedia].[Id] AS [Id], 
-    [AnswersMedia].[AnswerID] AS [AnswerID], 
-    [AnswersMedia].[MediaPath] AS [MediaPath]
-    FROM [dbo].[AnswersMedia] AS [AnswersMedia]</DefiningQuery>
-          </EntitySet>
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="VotesUserAnswers" EntityType="Self.VotesUserAnswers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="VotesUserProblem" EntityType="Self.VotesUserProblem" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK__Answers__Problem__06CD04F7" Association="Self.FK__Answers__Problem__06CD04F7">
             <End Role="Problems" EntitySet="Problems" />
             <End Role="Answers" EntitySet="Answers" />
@@ -224,6 +303,22 @@ warning 6002: The table/view 'MechanicsForum.dbo.AnswersMedia' does not have a p
           <AssociationSet Name="FK__ProblemsM__Probl__18EBB532" Association="Self.FK__ProblemsM__Probl__18EBB532">
             <End Role="Problems" EntitySet="Problems" />
             <End Role="ProblemsMedia" EntitySet="ProblemsMedia" />
+          </AssociationSet>
+          <AssociationSet Name="FK__VotesUser__Answe__3B40CD36" Association="Self.FK__VotesUser__Answe__3B40CD36">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="VotesUserAnswers" EntitySet="VotesUserAnswers" />
+          </AssociationSet>
+          <AssociationSet Name="FK__VotesUser__Answe__3C34F16F" Association="Self.FK__VotesUser__Answe__3C34F16F">
+            <End Role="Answers" EntitySet="Answers" />
+            <End Role="VotesUserAnswers" EntitySet="VotesUserAnswers" />
+          </AssociationSet>
+          <AssociationSet Name="FK__VotesUser__Probl__3864608B" Association="Self.FK__VotesUser__Probl__3864608B">
+            <End Role="Problems" EntitySet="Problems" />
+            <End Role="VotesUserProblem" EntitySet="VotesUserProblem" />
+          </AssociationSet>
+          <AssociationSet Name="FK__VotesUser__UserI__37703C52" Association="Self.FK__VotesUser__UserI__37703C52">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="VotesUserProblem" EntitySet="VotesUserProblem" />
           </AssociationSet>
           <AssociationSet Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
@@ -246,6 +341,16 @@ warning 6002: The table/view 'MechanicsForum.dbo.AnswersMedia' does not have a p
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="MechanicsForumModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="C__MigrationHistory">
+          <Key>
+            <PropertyRef Name="MigrationId" />
+            <PropertyRef Name="ContextKey" />
+          </Key>
+          <Property Name="MigrationId" Type="String" MaxLength="150" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ContextKey" Type="String" MaxLength="300" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Model" Type="Binary" MaxLength="Max" FixedLength="false" Nullable="false" />
+          <Property Name="ProductVersion" Type="String" MaxLength="32" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
         <EntityType Name="Answer">
           <Key>
             <PropertyRef Name="Id" />
@@ -259,7 +364,17 @@ warning 6002: The table/view 'MechanicsForum.dbo.AnswersMedia' does not have a p
           <Property Name="Problem_Id" Type="Int32" Nullable="false" />
           <Property Name="CountModified" Type="Int32" />
           <NavigationProperty Name="Problem" Relationship="Self.FK__Answers__Problem__06CD04F7" FromRole="Answers" ToRole="Problems" />
-          <NavigationProperty Name="AnswersMedias" Relationship="MechanicsForumModel.FK__AnswersMe__Answe__3587F3E0" FromRole="Answer" ToRole="AnswersMedia" />
+          <NavigationProperty Name="AnswersMedias" Relationship="Self.FK__AnswersMe__Answe__3587F3E0" FromRole="Answers" ToRole="AnswersMedia" />
+          <NavigationProperty Name="AspNetUsers" Relationship="Self.VotesUserAnswers" FromRole="Answers" ToRole="AspNetUsers" />
+        </EntityType>
+        <EntityType Name="AnswersMedia">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AnswerID" Type="Int32" Nullable="false" />
+          <Property Name="MediaPath" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Answer" Relationship="Self.FK__AnswersMe__Answe__3587F3E0" FromRole="AnswersMedia" ToRole="Answers" />
         </EntityType>
         <EntityType Name="AspNetRole">
           <Key>
@@ -279,17 +394,6 @@ warning 6002: The table/view 'MechanicsForum.dbo.AnswersMedia' does not have a p
           <Property Name="ClaimValue" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="AspNetUser" Relationship="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" FromRole="AspNetUserClaims" ToRole="AspNetUsers" />
         </EntityType>
-        <EntityType Name="AspNetUserLogin">
-          <Key>
-            <PropertyRef Name="LoginProvider" />
-            <PropertyRef Name="ProviderKey" />
-            <PropertyRef Name="UserId" />
-          </Key>
-          <Property Name="LoginProvider" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="ProviderKey" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="UserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="AspNetUser" Relationship="Self.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" FromRole="AspNetUserLogins" ToRole="AspNetUsers" />
-        </EntityType>
         <EntityType Name="AspNetUser">
           <Key>
             <PropertyRef Name="Id" />
@@ -307,8 +411,10 @@ warning 6002: The table/view 'MechanicsForum.dbo.AnswersMedia' does not have a p
           <Property Name="AccessFailedCount" Type="Int32" Nullable="false" />
           <Property Name="UserName" Type="String" MaxLength="256" FixedLength="false" Unicode="true" Nullable="false" />
           <NavigationProperty Name="AspNetUserClaims" Relationship="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" FromRole="AspNetUsers" ToRole="AspNetUserClaims" />
-          <NavigationProperty Name="AspNetUserLogins" Relationship="Self.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" FromRole="AspNetUsers" ToRole="AspNetUserLogins" />
           <NavigationProperty Name="AspNetRoles" Relationship="Self.AspNetUserRoles" FromRole="AspNetUsers" ToRole="AspNetRoles" />
+          <NavigationProperty Name="Answers" Relationship="Self.VotesUserAnswers" FromRole="AspNetUsers" ToRole="Answers" />
+          <NavigationProperty Name="Problems" Relationship="Self.VotesUserProblem" FromRole="AspNetUsers" ToRole="Problems" />
+          <NavigationProperty Name="AspNetUserLogins" Relationship="MechanicsForumModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" FromRole="AspNetUser" ToRole="AspNetUserLogin" />
         </EntityType>
         <EntityType Name="Problem">
           <Key>
@@ -317,17 +423,37 @@ warning 6002: The table/view 'MechanicsForum.dbo.AnswersMedia' does not have a p
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="UserId" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="location" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Comment" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="PostDate" Type="DateTime" Precision="3" />
           <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
           <Property Name="DateClosed" Type="DateTime" Precision="3" />
           <Property Name="SolvedBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="ClosedBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Summary" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="VotesUp" Type="Int64" />
+          <Property Name="VotesDown" Type="Int64" />
           <NavigationProperty Name="Answers" Relationship="Self.FK__Answers__Problem__06CD04F7" FromRole="Problems" ToRole="Answers" />
-          <NavigationProperty Name="ProblemsMedia" Relationship="MechanicsForumModel.FK__ProblemsM__Probl__160F4887" FromRole="Problem" ToRole="ProblemsMedia" />
+          <NavigationProperty Name="ProblemsMedias" Relationship="Self.FK__ProblemsM__Probl__18EBB532" FromRole="Problems" ToRole="ProblemsMedia" />
+          <NavigationProperty Name="AspNetUsers" Relationship="Self.VotesUserProblem" FromRole="Problems" ToRole="AspNetUsers" />
+        </EntityType>
+        <EntityType Name="ProblemsMedia">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProblemID" Type="Int32" Nullable="false" />
+          <Property Name="MediaPath" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Problem" Relationship="Self.FK__ProblemsM__Probl__18EBB532" FromRole="ProblemsMedia" ToRole="Problems" />
+        </EntityType>
+        <EntityType Name="sysdiagram">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
         </EntityType>
         <Association Name="FK__Answers__Problem__06CD04F7">
           <End Role="Problems" Type="Self.Problem" Multiplicity="1" />
@@ -338,6 +464,18 @@ warning 6002: The table/view 'MechanicsForum.dbo.AnswersMedia' does not have a p
             </Principal>
             <Dependent Role="Answers">
               <PropertyRef Name="Problem_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__AnswersMe__Answe__3587F3E0">
+          <End Role="Answers" Type="Self.Answer" Multiplicity="1" />
+          <End Role="AnswersMedia" Type="Self.AnswersMedia" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Answers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AnswersMedia">
+              <PropertyRef Name="AnswerID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -355,72 +493,11 @@ warning 6002: The table/view 'MechanicsForum.dbo.AnswersMedia' does not have a p
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId">
-          <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Role="AspNetUserLogins" Type="Self.AspNetUserLogin" Multiplicity="*" />
+        <Association Name="FK__ProblemsM__Probl__18EBB532">
+          <End Role="Problems" Type="Self.Problem" Multiplicity="1" />
+          <End Role="ProblemsMedia" Type="Self.ProblemsMedia" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="AspNetUsers">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="AspNetUserLogins">
-              <PropertyRef Name="UserId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="AspNetUserRoles">
-          <End Role="AspNetRoles" Type="Self.AspNetRole" Multiplicity="*" />
-          <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="*" />
-        </Association>
-        <EntityContainer Name="MechanicsForumEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="Answers" EntityType="Self.Answer" />
-          <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRole" />
-          <EntitySet Name="AspNetUserClaims" EntityType="Self.AspNetUserClaim" />
-          <EntitySet Name="AspNetUserLogins" EntityType="Self.AspNetUserLogin" />
-          <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUser" />
-          <EntitySet Name="Problems" EntityType="Self.Problem" />
-          <AssociationSet Name="FK__Answers__Problem__06CD04F7" Association="Self.FK__Answers__Problem__06CD04F7">
-            <End Role="Problems" EntitySet="Problems" />
-            <End Role="Answers" EntitySet="Answers" />
-          </AssociationSet>
-          <AssociationSet Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
-            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
-            <End Role="AspNetUserClaims" EntitySet="AspNetUserClaims" />
-          </AssociationSet>
-          <AssociationSet Name="FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId">
-            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
-            <End Role="AspNetUserLogins" EntitySet="AspNetUserLogins" />
-          </AssociationSet>
-          <AssociationSet Name="AspNetUserRoles" Association="Self.AspNetUserRoles">
-            <End Role="AspNetRoles" EntitySet="AspNetRoles" />
-            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
-          </AssociationSet>
-          <EntitySet Name="ProblemsMedias" EntityType="MechanicsForumModel.ProblemsMedia" />
-          <AssociationSet Name="FK__ProblemsM__Probl__160F4887" Association="MechanicsForumModel.FK__ProblemsM__Probl__160F4887">
-            <End Role="Problem" EntitySet="Problems" />
-            <End Role="ProblemsMedia" EntitySet="ProblemsMedias" />
-          </AssociationSet>
-          <EntitySet Name="AnswersMedias" EntityType="MechanicsForumModel.AnswersMedia" />
-          <AssociationSet Name="FK__AnswersMe__Answe__3587F3E0" Association="MechanicsForumModel.FK__AnswersMe__Answe__3587F3E0">
-            <End Role="Answer" EntitySet="Answers" />
-            <End Role="AnswersMedia" EntitySet="AnswersMedias" />
-          </AssociationSet>
-        </EntityContainer>
-        <EntityType Name="ProblemsMedia">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" />
-          <Property Name="ProblemID" Type="Int32" Nullable="false" />
-          <Property Name="MediaPath" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Problem" Relationship="MechanicsForumModel.FK__ProblemsM__Probl__160F4887" FromRole="ProblemsMedia" ToRole="Problem" />
-        </EntityType>
-        <Association Name="FK__ProblemsM__Probl__160F4887">
-          <End Type="MechanicsForumModel.Problem" Role="Problem" Multiplicity="1" />
-          <End Type="MechanicsForumModel.ProblemsMedia" Role="ProblemsMedia" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Problem">
+            <Principal Role="Problems">
               <PropertyRef Name="Id" />
             </Principal>
             <Dependent Role="ProblemsMedia">
@@ -428,25 +505,84 @@ warning 6002: The table/view 'MechanicsForum.dbo.AnswersMedia' does not have a p
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="AnswersMedia">
+        <Association Name="AspNetUserRoles">
+          <End Role="AspNetRoles" Type="Self.AspNetRole" Multiplicity="*" />
+          <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="*" />
+        </Association>
+        <Association Name="VotesUserAnswers">
+          <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="*" />
+          <End Role="Answers" Type="Self.Answer" Multiplicity="*" />
+        </Association>
+        <Association Name="VotesUserProblem">
+          <End Role="Problems" Type="Self.Problem" Multiplicity="*" />
+          <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="*" />
+        </Association>
+        <EntityContainer Name="MechanicsForumEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="C__MigrationHistory" EntityType="Self.C__MigrationHistory" />
+          <EntitySet Name="Answers" EntityType="Self.Answer" />
+          <EntitySet Name="AnswersMedias" EntityType="Self.AnswersMedia" />
+          <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRole" />
+          <EntitySet Name="AspNetUserClaims" EntityType="Self.AspNetUserClaim" />
+          <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUser" />
+          <EntitySet Name="Problems" EntityType="Self.Problem" />
+          <EntitySet Name="ProblemsMedias" EntityType="Self.ProblemsMedia" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
+          <AssociationSet Name="FK__Answers__Problem__06CD04F7" Association="Self.FK__Answers__Problem__06CD04F7">
+            <End Role="Problems" EntitySet="Problems" />
+            <End Role="Answers" EntitySet="Answers" />
+          </AssociationSet>
+          <AssociationSet Name="FK__AnswersMe__Answe__3587F3E0" Association="Self.FK__AnswersMe__Answe__3587F3E0">
+            <End Role="Answers" EntitySet="Answers" />
+            <End Role="AnswersMedia" EntitySet="AnswersMedias" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="AspNetUserClaims" EntitySet="AspNetUserClaims" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ProblemsM__Probl__18EBB532" Association="Self.FK__ProblemsM__Probl__18EBB532">
+            <End Role="Problems" EntitySet="Problems" />
+            <End Role="ProblemsMedia" EntitySet="ProblemsMedias" />
+          </AssociationSet>
+          <AssociationSet Name="AspNetUserRoles" Association="Self.AspNetUserRoles">
+            <End Role="AspNetRoles" EntitySet="AspNetRoles" />
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+          </AssociationSet>
+          <AssociationSet Name="VotesUserAnswers" Association="Self.VotesUserAnswers">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="Answers" EntitySet="Answers" />
+          </AssociationSet>
+          <AssociationSet Name="VotesUserProblem" Association="Self.VotesUserProblem">
+            <End Role="Problems" EntitySet="Problems" />
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+          </AssociationSet>
+          <EntitySet Name="AspNetUserLogins" EntityType="MechanicsForumModel.AspNetUserLogin" />
+          <AssociationSet Name="FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" Association="MechanicsForumModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId">
+            <End Role="AspNetUser" EntitySet="AspNetUsers" />
+            <End Role="AspNetUserLogin" EntitySet="AspNetUserLogins" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="AspNetUserLogin">
           <Key>
-            <PropertyRef Name="Id" />
-            <PropertyRef Name="AnswerID" />
+            <PropertyRef Name="LoginProvider" />
+            <PropertyRef Name="ProviderKey" />
+            <PropertyRef Name="UserId" />
           </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="AnswerID" Type="Int32" Nullable="false" />
-          <Property Name="MediaPath" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Answer" Relationship="MechanicsForumModel.FK__AnswersMe__Answe__3587F3E0" FromRole="AnswersMedia" ToRole="Answer" />
+          <Property Name="LoginProvider" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="ProviderKey" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AspNetUser" Relationship="MechanicsForumModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" FromRole="AspNetUserLogin" ToRole="AspNetUser" />
         </EntityType>
-        <Association Name="FK__AnswersMe__Answe__3587F3E0">
-          <End Type="MechanicsForumModel.Answer" Role="Answer" Multiplicity="1" />
-          <End Type="MechanicsForumModel.AnswersMedia" Role="AnswersMedia" Multiplicity="*" />
+        <Association Name="FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId">
+          <End Type="MechanicsForumModel.AspNetUser" Role="AspNetUser" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="MechanicsForumModel.AspNetUserLogin" Role="AspNetUserLogin" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Answer">
+            <Principal Role="AspNetUser">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="AnswersMedia">
-              <PropertyRef Name="AnswerID" />
+            <Dependent Role="AspNetUserLogin">
+              <PropertyRef Name="UserId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -456,6 +592,16 @@ warning 6002: The table/view 'MechanicsForum.dbo.AnswersMedia' does not have a p
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="MechanicsForumModelStoreContainer" CdmEntityContainer="MechanicsForumEntities">
+          <EntitySetMapping Name="C__MigrationHistory">
+            <EntityTypeMapping TypeName="MechanicsForumModel.C__MigrationHistory">
+              <MappingFragment StoreEntitySet="__MigrationHistory">
+                <ScalarProperty Name="MigrationId" ColumnName="MigrationId" />
+                <ScalarProperty Name="ContextKey" ColumnName="ContextKey" />
+                <ScalarProperty Name="Model" ColumnName="Model" />
+                <ScalarProperty Name="ProductVersion" ColumnName="ProductVersion" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Answers">
             <EntityTypeMapping TypeName="MechanicsForumModel.Answer">
               <MappingFragment StoreEntitySet="Answers">
@@ -467,6 +613,15 @@ warning 6002: The table/view 'MechanicsForum.dbo.AnswersMedia' does not have a p
                 <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
                 <ScalarProperty Name="Problem_Id" ColumnName="Problem_Id" />
                 <ScalarProperty Name="CountModified" ColumnName="CountModified" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AnswersMedias">
+            <EntityTypeMapping TypeName="MechanicsForumModel.AnswersMedia">
+              <MappingFragment StoreEntitySet="AnswersMedia">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="AnswerID" ColumnName="AnswerID" />
+                <ScalarProperty Name="MediaPath" ColumnName="MediaPath" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -485,15 +640,6 @@ warning 6002: The table/view 'MechanicsForum.dbo.AnswersMedia' does not have a p
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
                 <ScalarProperty Name="ClaimType" ColumnName="ClaimType" />
                 <ScalarProperty Name="ClaimValue" ColumnName="ClaimValue" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="AspNetUserLogins">
-            <EntityTypeMapping TypeName="MechanicsForumModel.AspNetUserLogin">
-              <MappingFragment StoreEntitySet="AspNetUserLogins">
-                <ScalarProperty Name="LoginProvider" ColumnName="LoginProvider" />
-                <ScalarProperty Name="ProviderKey" ColumnName="ProviderKey" />
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -521,15 +667,35 @@ warning 6002: The table/view 'MechanicsForum.dbo.AnswersMedia' does not have a p
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
-                <ScalarProperty Name="location" ColumnName="location" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="Comment" ColumnName="Comment" />
                 <ScalarProperty Name="PostDate" ColumnName="PostDate" />
                 <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
                 <ScalarProperty Name="DateClosed" ColumnName="DateClosed" />
                 <ScalarProperty Name="SolvedBy" ColumnName="SolvedBy" />
                 <ScalarProperty Name="ClosedBy" ColumnName="ClosedBy" />
                 <ScalarProperty Name="Summary" ColumnName="Summary" />
+                <ScalarProperty Name="VotesUp" ColumnName="VotesUp" />
+                <ScalarProperty Name="VotesDown" ColumnName="VotesDown" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ProblemsMedias">
+            <EntityTypeMapping TypeName="MechanicsForumModel.ProblemsMedia">
+              <MappingFragment StoreEntitySet="ProblemsMedia">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="ProblemID" ColumnName="ProblemID" />
+                <ScalarProperty Name="MediaPath" ColumnName="MediaPath" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="MechanicsForumModel.sysdiagram">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -541,21 +707,28 @@ warning 6002: The table/view 'MechanicsForum.dbo.AnswersMedia' does not have a p
               <ScalarProperty Name="Id" ColumnName="UserId" />
             </EndProperty>
           </AssociationSetMapping>
-          <EntitySetMapping Name="ProblemsMedias">
-            <EntityTypeMapping TypeName="MechanicsForumModel.ProblemsMedia">
-              <MappingFragment StoreEntitySet="ProblemsMedia">
-                <ScalarProperty Name="MediaPath" ColumnName="MediaPath" />
-                <ScalarProperty Name="ProblemID" ColumnName="ProblemID" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="AnswersMedias">
-            <EntityTypeMapping TypeName="MechanicsForumModel.AnswersMedia">
-              <MappingFragment StoreEntitySet="AnswersMedia">
-                <ScalarProperty Name="MediaPath" ColumnName="MediaPath" />
-                <ScalarProperty Name="AnswerID" ColumnName="AnswerID" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
+          <AssociationSetMapping Name="VotesUserAnswers" TypeName="MechanicsForumModel.VotesUserAnswers" StoreEntitySet="VotesUserAnswers">
+            <EndProperty Name="AspNetUsers">
+              <ScalarProperty Name="Id" ColumnName="UserId" />
+            </EndProperty>
+            <EndProperty Name="Answers">
+              <ScalarProperty Name="Id" ColumnName="AnswerId" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <AssociationSetMapping Name="VotesUserProblem" TypeName="MechanicsForumModel.VotesUserProblem" StoreEntitySet="VotesUserProblem">
+            <EndProperty Name="Problems">
+              <ScalarProperty Name="Id" ColumnName="ProblemId" />
+            </EndProperty>
+            <EndProperty Name="AspNetUsers">
+              <ScalarProperty Name="Id" ColumnName="UserId" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <EntitySetMapping Name="AspNetUserLogins">
+            <EntityTypeMapping TypeName="MechanicsForumModel.AspNetUserLogin">
+              <MappingFragment StoreEntitySet="AspNetUserLogins">
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="ProviderKey" ColumnName="ProviderKey" />
+                <ScalarProperty Name="LoginProvider" ColumnName="LoginProvider" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

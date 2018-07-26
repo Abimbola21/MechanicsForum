@@ -18,25 +18,28 @@ namespace MechanicsForum.Models
         public Problem()
         {
             this.Answers = new HashSet<Answer>();
-            this.ProblemsMedia = new HashSet<ProblemsMedia>();
+            this.ProblemsMedias = new HashSet<ProblemsMedia>();
+            this.AspNetUsers = new HashSet<AspNetUser>();
         }
     
         public int Id { get; set; }
         public string Description { get; set; }
         public string UserId { get; set; }
-        public string location { get; set; }
         public string Status { get; set; }
-        public string Comment { get; set; }
         public Nullable<System.DateTime> PostDate { get; set; }
         public Nullable<System.DateTime> ModifiedDate { get; set; }
         public Nullable<System.DateTime> DateClosed { get; set; }
         public string SolvedBy { get; set; }
         public string ClosedBy { get; set; }
         public string Summary { get; set; }
+        public Nullable<long> VotesUp { get; set; }
+        public Nullable<long> VotesDown { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Answer> Answers { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ProblemsMedia> ProblemsMedia { get; set; }
+        public virtual ICollection<ProblemsMedia> ProblemsMedias { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<AspNetUser> AspNetUsers { get; set; }
     }
 }

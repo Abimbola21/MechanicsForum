@@ -23,6 +23,12 @@ namespace MechanicsForum.Controllers
         {
             return View(db.Answers.ToList());
         }
+        //GET: Logged in user
+        public string CurrentUser()
+        {
+            return User.Identity.GetUserName();
+
+        }
 
         //GET: Answer/Details/5
         public ActionResult Details(int? id)
@@ -161,17 +167,99 @@ namespace MechanicsForum.Controllers
                 foreach (var mPath in paths)
                 {
                     media.MediaPath = mPath;
-                    db.AnswersMedia.Add(media);
+                    db.AnswersMedias.Add(media);
                     db.SaveChanges();
                 }
             }
 
             return RedirectToAction("Details/"+answer.Problem_Id);
         }
+        [Authorize(Roles = "Moderator")]
+        public JsonResult CloseProblem(int? id)
+        {
+            
+            if (id == null)
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                return Json(new { message = "Bad Request" }, JsonRequestBehavior.AllowGet);
+            }
+            if (Request.IsAuthenticated)
+            {
+               // if (User.IsInRole("Moderator"))
+               // {
+                    // Query the database for the row to be updated.
+                    var query =
+                        from prob in db.Problems
+                        where prob.Id == id
+                        select prob;
+
+                    // Execute the query, and change the column values
+                    // you want to change.
+                    if (query != null)
+                    {
+                        foreach ( var p in query)
+                        {
+                            p.ClosedBy = CurrentUser();
+                            p.DateClosed = DateTime.Now;
+                            p.Status = "closed";
+                        }
+                      
+                    }
+                    else
+                    {
+                        Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                        return Json(new { message = "Bad Request" }, JsonRequestBehavior.AllowGet);
+                    }
+
+                    // Submit the changes to the database.
+                    try
+                    {
+                        db.SaveChanges();
+                        return Json(new { result = true }, JsonRequestBehavior.AllowGet);
+                    }
+                    catch (Exception e)
+                    {
+                        // Provide for exceptions.
+                        return Json(new { result = e }, JsonRequestBehavior.AllowGet);
+                    }
+               // }
+                
+            }
+            return Json(new { result = false}, JsonRequestBehavior.AllowGet);
+        }
+        [Authorize(Roles = "Contributor,Mechanic")]
+        public JsonResult CountVote(int? id)
+        {
+            if (id == null)
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                return Json(new { message = "Bad Request" }, JsonRequestBehavior.AllowGet);
+            }
+            if (Request.IsAuthenticated)
+            {
+                var query = from ans in db.Answers
+                            where ans.Id == id
+                            select ans;
+                // Execute the query, and change the column values
+                // you want to change.
+                if (query != null)
+                {
+               //   var q = from votes in db.VotesUserAnswer
+
+                }
+                else
+                {
+                    Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    return Json(new { message = "Bad Request" }, JsonRequestBehavior.AllowGet);
+                }
+            }
+
+            return Json(new { result = true}, JsonRequestBehavior.AllowGet);
+        }
 
 
-// GET: Answer/Create
-public ActionResult Create()
+        // GET: Answer/Create
+        public ActionResult Create()
         {
             return View();
         }

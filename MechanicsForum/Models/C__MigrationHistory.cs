@@ -11,21 +11,12 @@ namespace MechanicsForum.Models
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-    using System.ComponentModel.DataAnnotations.Schema;
-
-    public partial class AspNetUserLogin
-    {
-        [Key]
-        [Column(Order = 1)]
-        public string LoginProvider { get; set; }
-        [Key]
-        [Column(Order = 2)]
-        public string ProviderKey { get; set; }
-        [Key]
-        [Column(Order = 3)]
-        public string UserId { get; set; }
     
-        public virtual AspNetUser AspNetUser { get; set; }
+    public partial class C__MigrationHistory
+    {
+        public string MigrationId { get; set; }
+        public string ContextKey { get; set; }
+        public byte[] Model { get; set; }
+        public string ProductVersion { get; set; }
     }
 }
