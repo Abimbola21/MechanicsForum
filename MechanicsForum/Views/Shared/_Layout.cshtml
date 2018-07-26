@@ -4,7 +4,6 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - Mechanics Forum Application</title>
-    @*<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">*@
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
     <script src="~/Scripts/populateQuestions.js" type="text/javascript"></script>
@@ -36,15 +35,21 @@
             <li>@Html.ActionLink("User Management", "Index", "AspNetUsers")</li>
 }
             @*<li>@Html.ActionLink("Contact", "Contact", "Home")</li>*@
-            @*<li><input type="text" class="form-control"></li>*@
-               <li>
-                   <form class="form-inline" role="search" method="post" action="/Problems/Search">
-                       <div class="form-group mx-sm-3 mb-2 srchBox">
-                           <input class="form-control" placeholder="Search" name="search" id="srch-term" type="text" >
-                       </div>
-                       <button class="btn btn-default" type="submit" style="margin:0.5em 0 0 0"><i class="glyphicon glyphicon-search"></i></button>
-                   </form></li>
+            <li><input type="text" class="form-control"></li>
+                @*<form class="navbar-form" role="search" method="post" action="/Problems/Search">
+                    <input class="form-control" placeholder="Search" name="search" id="srch-term" type="text">
+                    <span>
+                        <button class="btn btn-default" type="submit" style="margin:0.5em 0 0 0"><i class="glyphicon glyphicon-search"></i></button>
+                    </span>
+                </form>*@
+
+               
+                    <li><button class="btn btn-default" type="button">Go!</button></li>
+           
                 </ul>
+
+              
+
                 @Html.Partial("_LoginPartial")
 
             </div>

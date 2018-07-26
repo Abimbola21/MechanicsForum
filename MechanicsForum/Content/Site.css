@@ -27,8 +27,8 @@ textarea {
     margin-bottom: 30px;
 }*/
 
-#tbldiv {
-    background-color: white;
+#tbldiv{
+    background-color:white;
 }
 
 #problem-header {
@@ -100,7 +100,7 @@ textarea {
     display: block;
     color: #393318;
 }
-/*.rTable {
+.rTable {
     display: block;
     width: 100%;
     border: 1px solid black;
@@ -113,7 +113,6 @@ textarea {
     .rTableHead, .rTableFoot {
         background-color: #DDD;
         font-weight: bold;
-        text-align:center;
     }
 
     .rTableCell, .rTableHead {
@@ -139,15 +138,9 @@ textarea {
     content: " ";
     clear: both;
     height: 0;
-}*/
-    .srchBox{
-        margin-top:8px;
-    }
-    .voteColor{
-        color:white;
-    }
+}
 
-  .divStyle label { margin-right:20px; padding-left: 10px;}
+         .divStyle label { margin-right:20px; padding-left: 10px;}
 /*.divStyle checkbox {
     border: 1px solid red;
     margin-right: 20px
@@ -190,39 +183,6 @@ textarea {
     #section-footer .block {
         text-align: center;
     }
-.divTableHeading ,.divTableFoot {
-    display: table-header-group;
-    font-weight: bold;
-    background-color: #DDD;
-}
-.divTableCell, .divTableHead {
-    border: 1px solid #999999;
-    display: table-cell;
-    padding: 5px 0 5px 5px;
-    word-wrap: break-word;
-}
-.VotesImg{
-    width:40px;
-    height:40px;
-}
-#count {
-    background: #9F0;
-    width: 40px;
-    height: 40px;
-    text-align: center;
-    line-height: 40px;
-    font-size: 30px;
-    margin: 0;
-    border: 3px solid green;
-    border-radius: 5px;
-}
-
-@media (max-width: 320px) {
-    .divTableCell {
-        width: 100%;
-    }
-}
-
 @media (min-width:979px) {
     ul .nav li.dropdown:hover > div.dropdown-menu {
         display: block;

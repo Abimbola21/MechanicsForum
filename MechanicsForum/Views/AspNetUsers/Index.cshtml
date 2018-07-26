@@ -12,13 +12,14 @@
     <p>
         @Html.ActionLink("Create New", "Create")
     </p>
-        <div class="table" id="tbldiv">
-            <div class="row">
-                <div class="divTableHeading col-md-3 col-xs-6">User Name</div>
-                <div class="divTableHeading col-md-3 col-xs-6">Email</div>
-                <div class="divTableHeading col-md-3 col-xs-6">Role</div>
-            </div>
+
+    <div class="rTable" id="tbldiv">
+        <div class="rTableRow">
+            <div class="rTableHead"><strong>User Name</strong></div>
+            <div class="rTableHead"><span style="font-weight: bold;">Email</span></div>
+            <div class="rTableHead">Role</div>
         </div>
+    </div>
 
 </body>
 <script>
@@ -32,7 +33,7 @@
                 for (var i = 0; i < response.result.length; i++)
                 {
                     var rowdiv = document.createElement("div");
-                    rowdiv.setAttribute("class", "row");
+                    rowdiv.setAttribute("class", "rTableRow");
                     tablediv.appendChild(rowdiv);
                     var celldiv1 = document.createElement("div");
                     var celldiv2 = document.createElement("div");
@@ -42,32 +43,29 @@
                     var cellDetails = document.createElement("a");
                     var cellDelete = document.createElement("a");
 
-                    celldiv1.setAttribute("class", "col-md-3 col-xs-6 divTableCell");
-                    celldiv2.setAttribute("class", "col-md-3 col-xs-6 divTableCell");
-                    celldiv3.setAttribute("class", "col-md-3 col-xs-6 divTableCell");
-                    celldiv4.setAttribute("class", "col-md-3 col-xs-6 divTableCell");
-                    //cellEdit.setAttribute("class", "col-md-1 col-xs-6 divTableCell");
-                    //cellDetails.setAttribute("class", "col-md-1 col-xs-6 divTableCell");
-                    //cellDelete.setAttribute("class", "col-md-1 col-xs-6 divTableCell");
+                    celldiv1.setAttribute("class", "rTableCell col-sm-2 col-md-2");
+                    celldiv2.setAttribute("class", "rTableCell col-sm-2 col-md-2");
+                    celldiv3.setAttribute("class", "rTableCell col-sm-2 col-md-2");
+                    cellEdit.setAttribute("class", "rCellOther col-sm-2 col-md-2");
+                    cellDetails.setAttribute("class", "rCellOther col-sm-2 col-md-2");
+                    cellDelete.setAttribute("class", "rCellOther col-sm-2 col-md-2");
 
                     celldiv1.innerHTML = response.result[i].UserName;
                     celldiv2.innerHTML = response.result[i].Email;
                     celldiv3.innerHTML = response.result[i].Role;
-
                     cellEdit.innerHTML = "Edit | ";
                     cellEdit.setAttribute("href", "/AspNetUsers/Edit/"+response.result[i].Id);
                     cellDetails.innerHTML = "Detail | ";
                     cellDetails.setAttribute("href", "/AspNetUsers/Details/" + response.result[i].Id);
-                    cellDelete.innerHTML = "Delete ";
+                    cellDelete.innerHTML = "Delete";
                     cellDelete.setAttribute("href", "/AspNetUsers/Delete/" + response.result[i].Id);
 
-                    rowdiv.appendChild(celldiv1);
-                    rowdiv.appendChild(celldiv2);
-                    rowdiv.appendChild(celldiv3);
-                    rowdiv.appendChild(celldiv4);
-                    celldiv4.appendChild(cellEdit);
-                    celldiv4.appendChild(cellDetails);
-                    celldiv4.appendChild(cellDelete);
+                    tablediv.appendChild(celldiv1);
+                    tablediv.appendChild(celldiv2);
+                    tablediv.appendChild(celldiv3);
+                    tablediv.appendChild(cellEdit);
+                    tablediv.appendChild(cellDetails);
+                    tablediv.appendChild(cellDelete);
                 }
             })
     });

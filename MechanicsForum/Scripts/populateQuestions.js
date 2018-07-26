@@ -11,8 +11,8 @@
         // rowdiv.setAttribute("class", "problem-summary");
         //tablediv.setAttribute("class", "container");
         rowdiv.setAttribute("class", "row");
-        summdiv.setAttribute("class", "col-lg-8");
-        statDateDiv.setAttribute("class", "col-lg-4");
+        summdiv.setAttribute("class", "col-lg-9");
+        statDateDiv.setAttribute("class", "col-lg-3");
         //append the inner div to the outer div
         tablediv.appendChild(innerdiv);
         innerdiv.appendChild(rowdiv);
@@ -21,31 +21,9 @@
         //Summary Text is the Summary of each problem and it will be a link
         var summarytxt = document.createElement("a");
         //summarytxt.setAttribute("class", "summary");
-        //lblansCount will be assigned the number of answers to each problem
-        var lblansCount = document.createElement("label");
-        lblansCount.setAttribute("class","col-lg-2")
-        //var star1 = document.createElement("span");
-        //var star2 = document.createElement("span");
-        //var btnUp = document.createElement("button");
-        //var lblUp = document.createElement("label");
-        //var lblDown = document.createElement("label");
-        //var btnDown = document.createElement("button");
-        //btnUp.setAttribute("class", "btn btn-light");
-        //btnDown.setAttribute("class", "btn btn-light");
-        //star1.setAttribute("class", "glyphicon glyphicon-thumbs-up");
-        //star1.innerHTML = " Like";
-        //star2.setAttribute("class", "glyphicon glyphicon-thumbs-down");
-        //star2.innerHTML = " Dislike";
-        //btnUp.appendChild(star1);
-        //btnDown.appendChild(star2);
-        ////lblUp.setAttribute("class", "col-md-1");
-        ////lblDown.setAttribute("class", "col-md-1");
-        //lblUp.innerHTML = " 2k  ";
-        //lblDown.innerHTML = "  235  ";
-        
 
-        //define where the summary text link routes to when it is clicked
-        summarytxt.setAttribute("href", "/Answers/Details/" + response.result[i].g[0].Id);
+        //define where the link routes to when it is clicked
+        summarytxt.setAttribute("href", "/Answers/Details/" + response.result[i].Id);
         //below variables will hold elements that will store values from our problem result set
         //var status = document.createElement("div");
         //status.setAttribute("class", "timeStatus");
@@ -57,17 +35,12 @@
         //statusby.setAttribute("class", "col");
 
         //assign values to the elements created above
-        summarytxt.innerHTML = response.result[i].g[0].Summary;
-        //im using the tenary operator to find the number of answers to a question
-        //if ProblemId is 0, it means there are no answers to this questions
-        lblansCount.innerHTML = ((response.result[i].g[0].ProblemId) != 0) ?
-            response.result[i].count + " answers":
-            "0 answers";
+        summarytxt.innerHTML = response.result[i].Summary;
         if (response.result[i].Status == 'answered') {
-            statusby.innerHTML = response.result[i].g[0].Status + ' ' + response.result[i].g[0].latestAnswerBy;
+            statusby.innerHTML = response.result[i].Status + ' ' + response.result[i].latestAnswerBy;
         }
         else {
-            statusby.innerHTML = response.result[i].g[0].Status + ' ' + response.result[i].g[0].UserId;
+            statusby.innerHTML = response.result[i].Status + ' ' + response.result[i].UserId;
         }
 
         // var d =  Date(response.result[i].ModifiedDate);
@@ -85,16 +58,16 @@
         //        posted.getMinutes(), posted.getSeconds());
         //}
         if (response.result[i].ModifiedDate != '01/01/0001 00:00') {
-            post_ModDate.innerHTML = response.result[i].g[0].ModifiedDate;
+            post_ModDate.innerHTML = response.result[i].ModifiedDate;
         }
         else {
-            post_ModDate.innerHTML = response.result[i].g[0].PostDate;
+            post_ModDate.innerHTML = response.result[i].PostDate;
         }
 
         summdiv.appendChild(summarytxt);
-        summdiv.appendChild(document.createElement("br"));
-        summdiv.appendChild(document.createElement("br"));
-        summdiv.appendChild(lblansCount);
+        // summdiv.appendChild(status);
+        // summdiv.appendChild(statusby);
+        //summdiv.appendChild(post_ModDate);
         rowdiv.appendChild(statDateDiv);
         statDateDiv.appendChild(statusby);
         statDateDiv.appendChild(post_ModDate);

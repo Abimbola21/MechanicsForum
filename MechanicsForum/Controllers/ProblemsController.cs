@@ -22,7 +22,6 @@ namespace MechanicsForum.Controllers
         public string CurrentUser()
         {
            return User.Identity.GetUserName();
-           
         }
         // GET: Problems
         public ActionResult Index()
@@ -60,9 +59,9 @@ namespace MechanicsForum.Controllers
             //                         latestAnswerBy = a.Answers.Select(r => r.AnsweredBy)
             //                     }).ToList();
 
-            var AllProblems = (from a in db.Problems.AsEnumerable().Distinct()
+            var AllProblems = (from a in db.Problems.AsEnumerable()
                          join b in db.Answers on a.Id equals b.Problem_Id into ProblemAnswer
-                         from r in ProblemAnswer.DefaultIfEmpty()//.Where(x => x.Problem_Id != 0)
+                         from r in ProblemAnswer.Where(x => x.Problem_Id != 0)
                          orderby a.PostDate descending
                          group new
                          {
@@ -71,19 +70,11 @@ namespace MechanicsForum.Controllers
                              a.Description,
                              a.Summary,
                              a.Status,
-                             /*In my Answer table, the Problem_Id field is not null,
-                             this query is a result of a left join on the Problems table;
-                             this means that all problems will be returned even if they have not been answered. 
-                             The problem_Id field will then be null, in the result set.
-                             The lambdah expression below returns an array.I'm using .FirstOrDefault to give me the
-                             first element in this array or 0 if empty for ease of access in my Javascript
-                             */
-                             ProblemId = a.Answers.Select(r => r.Problem_Id).FirstOrDefault(),
                              ModifiedDate = a.ModifiedDate.GetValueOrDefault().ToString("MM/dd/yyyy HH:ss"),
                              PostDate = a.PostDate.GetValueOrDefault().ToString("MM/dd/yyyy HH:ss"),
                              a.ClosedBy,
                              DateClosed = a.DateClosed.GetValueOrDefault().ToString("MM/dd/yyyy HH:ss"),
-                             latestAnswerBy = a.Answers.Select(r => r.AnsweredBy).FirstOrDefault()
+                             latestAnswerBy = a.Answers.Select(r => r.AnsweredBy)
                          }
                          by new { a.Id }
                                into g
@@ -100,7 +91,7 @@ namespace MechanicsForum.Controllers
                 //               orderby a.PostDate descending
                 //               select new
                 //               {
-                //a.Id,
+                //                   a.Id,
                 //                   a.UserId,
                 //                   a.Description,
                 //                   a.Summary,
@@ -111,11 +102,12 @@ namespace MechanicsForum.Controllers
                 //                   a.DateClosed,
                 //                   a.latestAnswerBy
                 //               });
+                //var t = (from s in AllProblems
+                //         where s.g.Contains(t=>t
+                //)
 
-                 var t = AllProblems.SelectMany(x => x.g).Where(y => y.Summary.IndexOf(id, StringComparison.CurrentCultureIgnoreCase) >= 0 ||
-                y.Description.IndexOf(id, StringComparison.CurrentCultureIgnoreCase) >= 0).ToList();
-                
                 return Json(new { result = t }, JsonRequestBehavior.AllowGet);
+
             }
             
             if (AllProblems != null)
@@ -147,24 +139,6 @@ namespace MechanicsForum.Controllers
 
             return Json(new { result = count }, JsonRequestBehavior.AllowGet);
         }
-
-        //Count number of votes on a question 
-        //public JsonResult CountVotes()
-        //{
-        //    if (Request.IsAuthenticated)
-        //    {
-        //        if (User.IsInRole("Contributor"))
-        //        {
-        //            var update = 
-        //        }
-        //    }
-        //    var count = ;
-
-        //    return Json(new { result = count }, JsonRequestBehavior.AllowGet);
-        //}
-
-
-
         // GET: Problems/Details/5
         public ActionResult Details(int? id)
         {
@@ -291,7 +265,7 @@ namespace MechanicsForum.Controllers
                 foreach(var mPath in paths)
                 {
                     media.MediaPath = mPath;
-                    db.ProblemsMedias.Add(media);
+                    db.ProblemsMedia.Add(media);
                     db.SaveChanges();
                 }
              }

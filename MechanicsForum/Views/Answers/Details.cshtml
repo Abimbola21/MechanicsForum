@@ -1,15 +1,5 @@
 ﻿@model MechanicsForum.Models.Answer
 
-<p></p>
-<p>
-    @if (Request.IsAuthenticated && User.IsInRole("Moderator"))
-    {
-        <a href="#" class="btn btn-primary btn-lg active " role="button" aria-pressed="true"
-           onclick="closeProblem()">Close Problem</a>
-    }
-</p>
-
-<p style="color:lightgreen" id="probStat" hidden>Successful.</p>
 <h2 id="problemSummary"></h2>
 
 <div id="problem-header">
@@ -27,14 +17,14 @@
 </div>
 <hr />
 <div id="answers">
-    @*@if (Request.IsAuthenticated)
+    @if (Request.IsAuthenticated)
     {
         <div id="eachCommDiv"></div>
     }
     else
     {
-        <div id="eachCommDiv"></div>
-    }*@
+        <div id="eachCommDiv" onclick="document.getElementById('btncomment').hidden = false; return false;"></div>
+    }
 </div>
 <div class="form-horizontal">
     <hr />
@@ -68,17 +58,6 @@
 
 <script>
     document.addEventListener("load", loadAnswers());
-
-    function closeProblem() {
-        var loc = window.location.href;
-        var pid = loc.substring(loc.lastIndexOf('/') + 1, loc.length);
-        var p = document.getElementById("probStat");
-        postData('/Answers/CloseProblem?id=' + loc.substring(loc.lastIndexOf('/') + 1, loc.length))
-            .then(function (response) {
-                console.table(response);
-                p.hidden = false;
-            }).catch (error => console.error(error))
-    }
 
 
     function loadAnswers() {
@@ -136,41 +115,7 @@
                 //loop through answers to the above question and display
                 for (var i = 0; i < response.result.length; i++) {
                     var answerDiv = document.getElementById("answers");
-                    var eachAnsDiv = document.createElement("div");
-                    eachAnsDiv.setAttribute("id", "ansdiv" + i);
-                    answerDiv.appendChild(eachAnsDiv);
-
-                    //div for votes up and votes down
-                    //append to each answer div
-                    var Votesdiv = document.createElement("div");                
-                    var UpVote = document.createElement("a");
-                    Votesdiv.appendChild(UpVote);
-                    var p = document.createElement("p");
-                    p.setAttribute("id", "count");
-                    p.innerHTML = "0";
-                    Votesdiv.appendChild(p);
-                    var DownVote = document.createElement("a");
-                    Votesdiv.appendChild(DownVote);
-                    var imgUp = document.createElement("img");
-                    imgUp.setAttribute("src", "/Content/images/UpVote.jpg");
-                    imgUp.setAttribute("class", "VotesImg");
-                    var imgDown = document.createElement("img");  
-                    imgDown.setAttribute("src", "/Content/images/DownVote.jpg");
-                    imgDown.setAttribute("class", "VotesImg");
-                    var lblUp = document.createElement("label");
-                    var lblDown = document.createElement("label");
-                    UpVote.setAttribute("href", "");
-                    UpVote.appendChild(imgUp);
-                    DownVote.setAttribute("href", "");
-                    DownVote.appendChild(imgDown);
-                    //btnUp.setAttribute("class", "btn btn-light");
-                    //btnDown.setAttribute("class", "btn btn-light");
-                    //star1.setAttribute("class", "glyphicon glyphicon-thumbs-up");
-                    //star1.innerHTML = " Like";
-                    //star2.setAttribute("class", "glyphicon glyphicon-thumbs-down");
-                    //star2.innerHTML = " Dislike";
-                    //btnUp.appendChild(star1);
-                    //btnDown.appendChild(star2);
+                    var eachCommDiv = document.getElementById("eachCommDiv");
 
                     var divDesc = document.createElement("div");
                     divDesc.setAttribute("class", "post-text");
@@ -184,29 +129,24 @@
                     var userInfo = document.createElement("div");
                     userInfo.setAttribute("class", "user-info");
 
-                   
-
                     //div for add comment
-                    //create a div to house comment button and textarea
-                    var btncmtdiv = document.createElement("div");
-                    btncmtdiv.setAttribute("id", "cmntId" + i);
-                    var btnaddcomnt = document.createElement("button");
-                    btnaddcomnt.innerHTML = "Add comment";
-                    btnaddcomnt.setAttribute("id", "bcmnt" + i);
-                    btnaddcomnt.setAttribute("class", "btn btn-light");
-                    btncmtdiv.appendChild(btnaddcomnt);
-                    btncmtdiv.appendChild(document.createElement("br"));
-                    btncmtdiv.appendChild(document.createElement("br"));
-                    //once comment button is clicked, create text area                    
-                    btnaddcomnt.addEventListener("click", function () {
-                        var btnId = document.getElementById(this.id)
-                        var num = btnId.id.replace("bcmnt", "");
-                        var txtComnt = document.createElement("textarea")
-                        txtComnt.setAttribute("id", "tcmnt" + num);
-                        txtComnt.setAttribute("rows", "5");
-                        txtComnt.setAttribute("cols", "100");
-                        var cmntdiv = document.getElementById("cmntId" + num);
-                        cmntdiv.appendChild(txtComnt);
+                    //create a div and button to add comment
+                    var commentdiv = document.createElement("div");
+                    var btncomment = document.createElement("button");
+                    btncomment.innerHTML = "Add comment";
+                    btncomment.setAttribute("class", "btn btn-light");
+                    commentdiv.appendChild(btncomment);
+                    commentdiv.appendChild(document.createElement("br"));
+                    commentdiv.appendChild(document.createElement("br"));
+                    //once comment button is clicked, create text area
+                    var txtComment2 = document.createElement("textarea")
+                    txtComment2.setAttribute("rows", "5");
+                    txtComment2.setAttribute("cols", "100");
+                    txtComment2.setAttribute("hidden", "true");
+                    commentdiv.appendChild(txtComment2);
+                    btncomment.addEventListener("click", function () {
+                 
+                        txtComment2.hidden = false;
                     });
 
 
@@ -222,11 +162,10 @@
                         divAnswerDate.innerHTML = new Date(response.result[i].AnswerDate.match(/\d+/)[0] * 1);
                     }
                     var hr = document.createElement("hr");
-                    //append votes button here
-                    eachAnsDiv.appendChild(divDesc);
-                    divDesc.appendChild(Votesdiv);
+
+                   eachAnsDiv.appendChild(divDesc);
                    eachAnsDiv.appendChild(userInfo);         
-                    eachAnsDiv.appendChild(btncmtdiv); 
+                   eachAnsDiv.appendChild(commentdiv); 
                    
                     userInfo.appendChild(divBy);
                     userInfo.appendChild(divAnswerDate);

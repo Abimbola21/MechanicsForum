@@ -18,7 +18,6 @@ namespace MechanicsForum.Models
         public Answer()
         {
             this.AnswersMedias = new HashSet<AnswersMedia>();
-            this.AspNetUsers = new HashSet<AspNetUser>();
         }
     
         public int Id { get; set; }
@@ -33,7 +32,5 @@ namespace MechanicsForum.Models
         public virtual Problem Problem { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AnswersMedia> AnswersMedias { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<AspNetUser> AspNetUsers { get; set; }
     }
 }
