@@ -4,21 +4,25 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="550745678a394744be69e83d677e598c" Name="Diagram1">
-        <EntityTypeShape EntityType="MechanicsForumModel.Answer" Width="1.5" PointX="11.375" PointY="1" IsExpanded="true" />
-        <EntityTypeShape EntityType="MechanicsForumModel.AspNetRole" Width="1.5" PointX="0.75" PointY="2.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="MechanicsForumModel.AspNetUserClaim" Width="1.5" PointX="5.25" PointY="1" IsExpanded="true" />
-        <EntityTypeShape EntityType="MechanicsForumModel.AspNetUserLogin" Width="1.5" PointX="5.25" PointY="3.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="MechanicsForumModel.AspNetUser" Width="1.5" PointX="3" PointY="1.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="MechanicsForumModel.Problem" Width="1.5" PointX="7.375" PointY="1" IsExpanded="true" />
+      <Diagram DiagramId="b40fccd605764d578a68e49b0e36ba00" Name="Diagram1" ZoomLevel="159">
+        <EntityTypeShape EntityType="MechanicsForumModel.C__MigrationHistory" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MechanicsForumModel.Answer" Width="1.5" PointX="3" PointY="5.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="MechanicsForumModel.AnswersMedia" Width="1.5" PointX="13.75" PointY="4.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="MechanicsForumModel.AspNetRole" Width="1.5" PointX="3.75" PointY="2" IsExpanded="true" />
+        <EntityTypeShape EntityType="MechanicsForumModel.AspNetUserClaim" Width="1.5" PointX="8.25" PointY="4.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="MechanicsForumModel.AspNetUser" Width="1.5" PointX="6" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MechanicsForumModel.Problem" Width="1.5" PointX="0.75" PointY="4.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="MechanicsForumModel.ProblemsMedia" Width="1.5" PointX="1.75" PointY="2.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="MechanicsForumModel.sysdiagram" Width="1.5" PointX="5.75" PointY="0.75" IsExpanded="true" />
         <AssociationConnector Association="MechanicsForumModel.FK__Answers__Problem__06CD04F7" ManuallyRouted="false" />
+        <AssociationConnector Association="MechanicsForumModel.FK__AnswersMe__Answe__3587F3E0" ManuallyRouted="false" />
         <AssociationConnector Association="MechanicsForumModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" ManuallyRouted="false" />
-        <AssociationConnector Association="MechanicsForumModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" ManuallyRouted="false" />
+        <AssociationConnector Association="MechanicsForumModel.FK__ProblemsM__Probl__18EBB532" ManuallyRouted="false" />
         <AssociationConnector Association="MechanicsForumModel.AspNetUserRoles" ManuallyRouted="false" />
-        <EntityTypeShape EntityType="MechanicsForumModel.ProblemsMedia" Width="1.5" PointX="9.75" PointY="4.25" />
-        <AssociationConnector Association="MechanicsForumModel.FK__ProblemsM__Probl__160F4887" />
-        <EntityTypeShape EntityType="MechanicsForumModel.AnswersMedia" Width="1.5" PointX="13.625" PointY="1.625" />
-        <AssociationConnector Association="MechanicsForumModel.FK__AnswersMe__Answe__3587F3E0" />
+        <AssociationConnector Association="MechanicsForumModel.VotesUserAnswers" ManuallyRouted="false" />
+        <AssociationConnector Association="MechanicsForumModel.VotesUserProblem" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="MechanicsForumModel.AspNetUserLogin" Width="1.5" PointX="8.25" PointY="8" />
+        <AssociationConnector Association="MechanicsForumModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
