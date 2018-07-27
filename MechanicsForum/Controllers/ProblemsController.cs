@@ -5,11 +5,9 @@ using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.IO;
-using System.Web;
 using System.Web.Mvc;
 using MechanicsForum.Models;
 using Microsoft.AspNet.Identity;
-using System.Data.SqlClient;
 
 namespace MechanicsForum.Controllers
 {
@@ -44,22 +42,6 @@ namespace MechanicsForum.Controllers
         //This returns a list of all problems
         public JsonResult GetAllProblems(string id)
         {
-            //var AllProblems = (from a in db.Problems.AsEnumerable()
-            //                   orderby a.PostDate descending
-            //                   select new
-            //                     {
-            //                         a.Id,
-            //                         a.UserId,
-            //                         a.Description,
-            //                         a.Summary,
-            //                         a.Status,
-            //                         ModifiedDate = a.ModifiedDate.GetValueOrDefault().ToString("MM/dd/yyyy HH:ss"),
-            //                         PostDate = a.PostDate.GetValueOrDefault().ToString("MM/dd/yyyy HH:ss"),
-            //                         a.ClosedBy,
-            //                         DateClosed = a.DateClosed.GetValueOrDefault().ToString("MM/dd/yyyy HH:ss"),
-            //                         latestAnswerBy = a.Answers.Select(r => r.AnsweredBy)
-            //                     }).ToList();
-
             var AllProblems = (from a in db.Problems.AsEnumerable().Distinct()
                          join b in db.Answers on a.Id equals b.Problem_Id into ProblemAnswer
                          from r in ProblemAnswer.DefaultIfEmpty()//.Where(x => x.Problem_Id != 0)
@@ -95,23 +77,6 @@ namespace MechanicsForum.Controllers
 
             if (id != null)
             {
-                //var t = (from a in AllProblems
-                //               where a.Summary.Contains(id) || a.Description.Contains(id)
-                //               orderby a.PostDate descending
-                //               select new
-                //               {
-                //a.Id,
-                //                   a.UserId,
-                //                   a.Description,
-                //                   a.Summary,
-                //                   a.Status,
-                //                   a.ModifiedDate,
-                //                   a.PostDate,
-                //                   a.ClosedBy,
-                //                   a.DateClosed,
-                //                   a.latestAnswerBy
-                //               });
-
                  var t = AllProblems.SelectMany(x => x.g).Where(y => y.Summary.IndexOf(id, StringComparison.CurrentCultureIgnoreCase) >= 0 ||
                 y.Description.IndexOf(id, StringComparison.CurrentCultureIgnoreCase) >= 0).ToList();
                 
@@ -147,24 +112,6 @@ namespace MechanicsForum.Controllers
 
             return Json(new { result = count }, JsonRequestBehavior.AllowGet);
         }
-
-        //Count number of votes on a question 
-        //public JsonResult CountVotes()
-        //{
-        //    if (Request.IsAuthenticated)
-        //    {
-        //        if (User.IsInRole("Contributor"))
-        //        {
-        //            var update = 
-        //        }
-        //    }
-        //    var count = ;
-
-        //    return Json(new { result = count }, JsonRequestBehavior.AllowGet);
-        //}
-
-
-
         // GET: Problems/Details/5
         public ActionResult Details(int? id)
         {
@@ -190,34 +137,7 @@ namespace MechanicsForum.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         //[ValidateAntiForgeryToken]
-        // public ActionResult Create([Bind(Include = "ProblemId,Description,Status,UserId,MediaPath")] Problem problem, FileStream file)
-        // {
-        //
-        //if (file != null)
-        //{
-        //    var fileName = Path.GetFileName(file.Name);
-        //    var path = _env + "\\uploads\\" + fileName;
-
-        //    using (var stream = new FileStream(path, FileMode.Create))
-        //    {
-        //         file.CopyToAsync(stream);
-        //    }
-        //    //update media path
-        //    problem.MediaPath = "uploads/" + fileName;
-
-        // var fileName = Path.GetFileName(file.Name);
-        //  var path = Path.Combine(Server.MapPath("~/uploads"), fileName);
-        // problem.MediaPath = path;
-        //  file.SaveAs(path);
-        //   if (ModelState.IsValid)
-        //        {
-        //      db.Problems.Add(problem);
-        //      db.SaveChanges();
-        //      return RedirectToAction("Index");
-        //    }
-
-        //    return View(problem);                 
-        //    }
+ 
         [HttpPost]
         public ActionResult Create([Bind(Include = "Summary,Description,Media Path")] Problem problem)
         { 
@@ -281,8 +201,6 @@ namespace MechanicsForum.Controllers
             problem.Status = "posted"; 
             problem.UserId = User.Identity.GetUserName();
             problem.PostDate = DateTime.Now;
-            //problem.ModifiedDate = DateTime.Now; 
-            //problem.DateClosed = DateTime.Now;
             if (ModelState.IsValid)
             {
              db.Problems.Add(problem);

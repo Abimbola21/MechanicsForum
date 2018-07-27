@@ -8,8 +8,6 @@
         var summdiv = document.createElement("div");
         var statDateDiv = document.createElement("div");
         //define the class of the inner div
-        // rowdiv.setAttribute("class", "problem-summary");
-        //tablediv.setAttribute("class", "container");
         rowdiv.setAttribute("class", "row");
         summdiv.setAttribute("class", "col-lg-8");
         statDateDiv.setAttribute("class", "col-lg-4");
@@ -24,37 +22,12 @@
         //lblansCount will be assigned the number of answers to each problem
         var lblansCount = document.createElement("label");
         lblansCount.setAttribute("class","col-lg-2")
-        //var star1 = document.createElement("span");
-        //var star2 = document.createElement("span");
-        //var btnUp = document.createElement("button");
-        //var lblUp = document.createElement("label");
-        //var lblDown = document.createElement("label");
-        //var btnDown = document.createElement("button");
-        //btnUp.setAttribute("class", "btn btn-light");
-        //btnDown.setAttribute("class", "btn btn-light");
-        //star1.setAttribute("class", "glyphicon glyphicon-thumbs-up");
-        //star1.innerHTML = " Like";
-        //star2.setAttribute("class", "glyphicon glyphicon-thumbs-down");
-        //star2.innerHTML = " Dislike";
-        //btnUp.appendChild(star1);
-        //btnDown.appendChild(star2);
-        ////lblUp.setAttribute("class", "col-md-1");
-        ////lblDown.setAttribute("class", "col-md-1");
-        //lblUp.innerHTML = " 2k  ";
-        //lblDown.innerHTML = "  235  ";
-        
 
         //define where the summary text link routes to when it is clicked
         summarytxt.setAttribute("href", "/Answers/Details/" + response.result[i].g[0].Id);
         //below variables will hold elements that will store values from our problem result set
-        //var status = document.createElement("div");
-        //status.setAttribute("class", "timeStatus");
         var post_ModDate = document.createElement("div");
-        //post_ModDate.setAttribute("class", "timeStatus");
-        //post_ModDate.setAttribute("class", "col");
         var statusby = document.createElement("div");
-        //statusby.setAttribute("class", "timeStatus");
-        //statusby.setAttribute("class", "col");
 
         //assign values to the elements created above
         summarytxt.innerHTML = response.result[i].g[0].Summary;
@@ -70,20 +43,6 @@
             statusby.innerHTML = response.result[i].g[0].Status + ' ' + response.result[i].g[0].UserId;
         }
 
-        // var d =  Date(response.result[i].ModifiedDate);
-        //if Modified date is not null, return modified date rather than the posted date
-        //else return posted date
-
-        //if (response.result[i].ModifiedDate != null) {
-        //    var modified = new Date(response.result[i].ModifiedDate.match(/\d+/)[0] * 1);
-        //    post_ModDate.innerHTML = new Date(modified.getFullYear(), modified.getDate() - 1, modified.getMonth() + 1, modified.getHours(),
-        //        modified.getMinutes(), modified.getSeconds());
-        //}
-        //else {
-        //    var posted = new Date(response.result[i].PostDate.match(/\d+/)[0] * 1);
-        //    post_ModDate.innerHTML = new Date(posted.getFullYear(), posted.getDate() - 1, posted.getMonth() + 1, posted.getHours(),
-        //        posted.getMinutes(), posted.getSeconds());
-        //}
         if (response.result[i].ModifiedDate != '01/01/0001 00:00') {
             post_ModDate.innerHTML = response.result[i].g[0].ModifiedDate;
         }
