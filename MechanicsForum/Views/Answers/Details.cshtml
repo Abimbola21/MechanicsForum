@@ -27,14 +27,7 @@
 </div>
 <hr />
 <div id="answers">
-    @*@if (Request.IsAuthenticated)
-    {
-        <div id="eachCommDiv"></div>
-    }
-    else
-    {
-        <div id="eachCommDiv"></div>
-    }*@
+  
 </div>
 <div class="form-horizontal">
     <hr />
@@ -42,7 +35,7 @@
 
     <form id="fileSelectForm" action="\Answers\SubmitAnswer" method="post" enctype="multipart/form-data">
         <textarea name="AnswerDesc" placeholder="Answer here....." id="answer" class="answertxt" rows="10" cols="1000" required></textarea>
-        <label for="desc">Upload Media: </label>
+        <label for="desc"></label>
         <div id="filediv">
             <input type="file" name="file1" id="file1" onchange="addFileSelection(this.name);" />
             <span id="x1" style="color:red" onclick="removeFileSelection(this);">X</span>
@@ -224,9 +217,12 @@
                     var hr = document.createElement("hr");
                     //append votes button here
                     eachAnsDiv.appendChild(divDesc);
-                    divDesc.appendChild(Votesdiv);
+                    if (response.result[i].AnswerDesc!=null) {
+                        divDesc.appendChild(Votesdiv);
+                        eachAnsDiv.appendChild(btncmtdiv); 
+                    }
                    eachAnsDiv.appendChild(userInfo);         
-                    eachAnsDiv.appendChild(btncmtdiv); 
+                 
                    
                     userInfo.appendChild(divBy);
                     userInfo.appendChild(divAnswerDate);

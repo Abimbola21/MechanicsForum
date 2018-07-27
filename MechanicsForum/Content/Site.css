@@ -17,16 +17,17 @@
 }
 
 /* Set width on the form input elements since they're 100% wide by default */
-input, select,
-textarea {
+input, select
+{
     max-width: 280px;
 }
-
+textarea{
+    max-width:1200px;
+}
 /*#tbldiv {
     overflow: auto;
     margin-bottom: 30px;
 }*/
-
 #tbldiv {
     background-color: white;
 }
